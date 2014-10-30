@@ -1,4 +1,4 @@
-package core;
+package core.network;
 
 import net.tomp2p.futures.FutureBootstrap;
 import net.tomp2p.futures.FutureDHT;

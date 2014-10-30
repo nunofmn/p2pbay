@@ -1,4 +1,4 @@
-import core.PeerConnection;
+import core.network.PeerConnection;
 
 public class Main {
 
