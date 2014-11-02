@@ -21,14 +21,18 @@ public class Item extends NetworkContent {
         this.Bids = new ArrayList<BidHistoryInfo>();
     }
 
-    public void addBid(BidHistoryInfo bid){
-        Bids.add(bid);
+    public void addBid(BidHistoryInfo bid) throws ItemFinalized{
+        if(!finalizado) {
+            Bids.add(bid);
+        }
+        else {
+            throws new ItemFinalized(this.titulo)
+        }
         //this.Vencedor = bid.getUser();
     }
 
     public void finalizarItem(){
-        this.finalizado = true;
-
+        this.finalizado = true
     }
 
     public void printBidHistoryInfo(){
