@@ -4,9 +4,12 @@ import  java.util.List;
 
 public class Item extends NetworkContent {
 
+    private String description;
     private double value;
     private int id;
     private List<BidHistoryInfo> Bids;
+    private boolean finalizado = false;
+    private String Vencedor;
 
 
     public Item(String description, int id, int value) {
@@ -19,6 +22,12 @@ public class Item extends NetworkContent {
 
     public void addBid(BidHistoryInfo bid){
         Bids.add(bid);
+        //this.Vencedor = Bids.get(Bids.size()).getUser
+    }
+
+    public void finalizarItem(){
+        this.finalizado = true;
+
     }
 
     public void printBidHistoryInfo(){
@@ -30,8 +39,6 @@ public class Item extends NetworkContent {
     public String getDescription() {
         return description;
     }
-
-    private String description;
 
     public int getId() {
         return id;
