@@ -1,6 +1,12 @@
 package core.model;
 import core.exception.*;
+
+import javax.xml.bind.DatatypeConverter;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Date;
 import  java.util.List;
 
 public class Item extends NetworkContent {
@@ -11,6 +17,8 @@ public class Item extends NetworkContent {
     private List<BidHistoryInfo> BidHistory;
     private boolean finalized = false;
     private String winner;
+    private Date creationDate;
+    private String identifier;
 
     public Item(String title, String description, int initialValue) {
         super();
@@ -18,6 +26,29 @@ public class Item extends NetworkContent {
         this.description = description;
         this.value = initialValue;
         this.BidHistory = new ArrayList<BidHistoryInfo>();
+        this.creationDate = new Date();
+        generateIdentifier();
+    }
+
+    private void generateIdentifier(){
+
+        String text = creationDate.toString().concat(title);
+        //System.out.println(text);
+        MessageDigest digest = null;
+        byte[] hash=null;
+
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+            hash = digest.digest(text.getBytes("UTF-8"));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        this.identifier =  DatatypeConverter.printHexBinary(hash);
+        //System.out.println(this.identifier);
+
+
     }
 
     public void addBid(BidHistoryInfo bid) throws ItemFinalized, InvalidBidValue{
