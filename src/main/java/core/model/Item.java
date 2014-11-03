@@ -4,39 +4,44 @@ import  java.util.List;
 
 public class Item extends NetworkContent {
 
-    private String titulo;
+    private String title;
     private String description;
     private double value;
-    private int id;
-    private List<BidHistoryInfo> Bids;
-    private boolean finalizado = false;
-    private String Vencedor;
+    private List<BidHistoryInfo> BidHistory;
+    private boolean finalized = false;
+    private String winner;
 
-
-    public Item(String titulo, String description, int id, int value) {
+    public Item(String title, String description, int initialValue) {
         super();
+        this.title = title;
         this.description = description;
-        this.value = value;
-        this.id = id;
-        this.Bids = new ArrayList<BidHistoryInfo>();
+        this.value = initialValue;
+        this.BidHistory = new ArrayList<BidHistoryInfo>();
     }
 
-    public void addBid(BidHistoryInfo bid) throws ItemFinalized{
-        if(!finalizado) {
-            Bids.add(bid);
+    public void addBid(BidHistoryInfo bid) throws ItemFinalized, InvalidBidValue{
+        if(!finalized && bid.getValue()< this.value ) {
+            this.BidHistory.add(bid);
+            this.value = bid.getValue()< this.value;
         }
         else {
-            throws new ItemFinalized(this.titulo)
+            if(finalized) {
+                throw new ItemFinalized(this.title);
+            }else{
+                throw new InvalidBidValue(this.value, bid.getValue());
+            }
+
         }
-        //this.Vencedor = bid.getUser();
+
     }
 
-    public void finalizarItem(){
-        this.finalizado = true
+    public void finalizeItem(){
+        this.finalized = true;
+        winner = this.BidHistory.get(BidHistory.size() -1).getUser();
     }
 
     public void printBidHistoryInfo(){
-        for(BidHistoryInfo bid : Bids) {
+        for(BidHistoryInfo bid : BidHistory) {
             System.out.println();
         }
     }
@@ -45,23 +50,20 @@ public class Item extends NetworkContent {
         return description;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public String getTitulo() {
-        return titulo;
+    public String getTitle() {
+        return title;
     }
 
     public double getValue() {
         return value;
     }
 
-    public String getVencedor() throws ItemNotFinalized{
-        if(finalizado){
-            return this.Bids.get(Bids.size() -1).getUser();
+    public String getWinner() throws ItemNotFinalized{
+        if(finalized){
+            return winner;
+        }else {
+            throw new ItemNotFinalized(this.title);
         }
-        throws new ItemNotFinalized(this.titulo);
     }
 
 }
