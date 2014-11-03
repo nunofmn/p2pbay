@@ -1,4 +1,5 @@
 package core.model;
+import core.exception.*;
 import java.util.ArrayList;
 import  java.util.List;
 
@@ -22,7 +23,7 @@ public class Item extends NetworkContent {
     public void addBid(BidHistoryInfo bid) throws ItemFinalized, InvalidBidValue{
         if(!finalized && bid.getValue()< this.value ) {
             this.BidHistory.add(bid);
-            this.value = bid.getValue()< this.value;
+            this.value = bid.getValue();
         }
         else {
             if(finalized) {

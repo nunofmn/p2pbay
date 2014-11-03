@@ -8,11 +8,18 @@ import java.io.Serializable;
 public class BidHistoryInfo implements Serializable {
 
     private String title;
-    private String value;
+    private double value;
+    private String user;
 
-    public BidHistoryInfo(String title, String value){
+    public BidHistoryInfo(String title, double value){
         this.title = title;
         this.value = value;
+    }
+
+    public BidHistoryInfo(String title, double value, String user){
+        this.title = title;
+        this.value = value;
+        this.user = user;
     }
 
     public String getTitle() {
@@ -23,11 +30,19 @@ public class BidHistoryInfo implements Serializable {
         this.title = title;
     }
 
-    public String getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(double value) {
         this.value = value;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 }
