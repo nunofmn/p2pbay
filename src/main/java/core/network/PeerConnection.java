@@ -25,22 +25,8 @@ public class PeerConnection {
         }
     }
 
-    public String get(String name)
-        throws ClassNotFoundException, IOException {
-
-        FutureDHT futureDHT = peer.get(Number160.createHash(name)).start();
-        futureDHT.awaitUninterruptibly();
-        if(futureDHT.isSuccess()) {
-            return futureDHT.getData().getObject().toString();
-        }
-
-        return "not found";
-    }
-
-    public void store(String name, String ip)
-        throws IOException {
-
-        peer.put(Number160.createHash(name)).setData(new Data(ip)).start().awaitUninterruptibly();
+    public Peer getPeer() {
+        return this.peer;
     }
 
 }
