@@ -21,7 +21,7 @@ public class Item extends NetworkContent {
     }
 
     public void addBid(BidHistoryInfo bid) throws ItemFinalized, InvalidBidValue{
-        if(!finalized && bid.getValue()< this.value ) {
+        if(!finalized && bid.getValue() >= this.value ) {
             this.BidHistory.add(bid);
             this.value = bid.getValue();
         }
