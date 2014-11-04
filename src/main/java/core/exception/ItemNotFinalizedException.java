@@ -3,9 +3,9 @@ package core.exception;
 /**
  * Created by Carlos on 03-11-2014.
  */
-public class ItemNotFinalized extends RuntimeException{
+public class ItemNotFinalizedException extends RuntimeException{
 
-    public ItemNotFinalized() {
+    public ItemNotFinalizedException() {
         super();
     }
 
@@ -14,7 +14,7 @@ public class ItemNotFinalized extends RuntimeException{
      * Instantiates a new rest exception.
      * @param title the message
      */
-    public ItemNotFinalized(final String title) {
+    public ItemNotFinalizedException(final String title) {
         super("Item: " + title + " is not finalized");
     }
 

@@ -3,10 +3,10 @@ package core.exception;
 /**
  * Created by Carlos on 03-11-2014.
  */
-public class ItemFinalized extends RuntimeException{
+public class ItemAlreadyFinalizedException extends RuntimeException{
 
 
-    public ItemFinalized() {
+    public ItemAlreadyFinalizedException() {
         super();
     }
 
@@ -15,7 +15,7 @@ public class ItemFinalized extends RuntimeException{
      * Instantiates a new rest exception.
      * @param title the message
      */
-    public ItemFinalized(final String title) {
+    public ItemAlreadyFinalizedException(final String title) {
         super("Item: " +title + " is already finalized");
     }
 

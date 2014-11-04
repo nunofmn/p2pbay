@@ -49,16 +49,16 @@ public class Item extends NetworkContent {
         //System.out.println(this.identifier);
     }
 
-    public void addBid(BidHistoryInfo bid) throws ItemFinalized, InvalidBidValue{
+    public void addBid(BidHistoryInfo bid) throws ItemAlreadyFinalizedException, InvalidBidValueException {
         if(!finalized && bid.getValue() >= this.value ) {
             this.bidHistory.add(bid);
             this.value = bid.getValue();
         }
         else {
             if(finalized) {
-                throw new ItemFinalized(this.title);
+                throw new ItemAlreadyFinalizedException(this.title);
             }else{
-                throw new InvalidBidValue(this.value, bid.getValue());
+                throw new InvalidBidValueException(this.value, bid.getValue());
             }
 
         }
@@ -92,11 +92,11 @@ public class Item extends NetworkContent {
         return value;
     }
 
-    public String getWinner() throws ItemNotFinalized{
+    public String getWinner() throws ItemNotFinalizedException {
         if(finalized){
             return winner;
         }else {
-            throw new ItemNotFinalized(this.title);
+            throw new ItemNotFinalizedException(this.title);
         }
     }
 
