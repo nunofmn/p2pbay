@@ -36,7 +36,7 @@ public class Main {
                     if (((UserProfile) userProfile).login(pass)) {
                         System.out.println("Login  - Sucesso!");
                         System.out.println("Login  - Mostrar mais menu agora!");
-                        //Item ipod = new Item("ipod","leitor mp3",100);
+                        Item ipod = new Item("ipod","leitor mp3",100);
                         //BidHistoryInfo bid = new BidHistoryInfo("ipod", 120, user);
                         //BidHistoryInfo bid2 = new BidHistoryInfo("ipod", 300, user);
                         //ipod.addBid(bid);

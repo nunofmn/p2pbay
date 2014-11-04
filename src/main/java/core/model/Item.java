@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import  java.util.List;
+import java.util.Random;
 
 public class Item extends NetworkContent {
 
@@ -32,14 +33,18 @@ public class Item extends NetworkContent {
 
     private void generateIdentifier(){
 
-        String text = creationDate.toString().concat(title);
+
         //System.out.println(text);
+        Random rand = new Random(System.currentTimeMillis());
+        Double randDoubleId = rand.nextDouble();
+        String randTextId = randDoubleId.toString();
+        //System.out.println(randTextId);
         MessageDigest digest = null;
         byte[] hash=null;
 
         try {
             digest = MessageDigest.getInstance("SHA-256");
-            hash = digest.digest(text.getBytes("UTF-8"));
+            hash = digest.digest(randTextId.getBytes("UTF-8"));
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
