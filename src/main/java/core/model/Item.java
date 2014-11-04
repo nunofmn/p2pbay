@@ -18,7 +18,6 @@ public class Item extends NetworkContent {
     private List<BidHistoryInfo> BidHistory;
     private boolean finalized = false;
     private String winner;
-    private Date creationDate;
     private String identifier;
 
     public Item(String title, String description, int initialValue) {
@@ -27,13 +26,10 @@ public class Item extends NetworkContent {
         this.description = description;
         this.value = initialValue;
         this.BidHistory = new ArrayList<BidHistoryInfo>();
-        this.creationDate = new Date();
         generateIdentifier();
     }
 
     private void generateIdentifier(){
-
-
         //System.out.println(text);
         Random rand = new Random(System.currentTimeMillis());
         Double randDoubleId = rand.nextDouble();
@@ -52,8 +48,6 @@ public class Item extends NetworkContent {
         }
         this.identifier =  DatatypeConverter.printHexBinary(hash);
         //System.out.println(this.identifier);
-
-
     }
 
     public void addBid(BidHistoryInfo bid) throws ItemFinalized, InvalidBidValue{
