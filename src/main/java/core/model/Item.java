@@ -6,7 +6,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Date;
 import  java.util.List;
 import java.util.Random;
 
@@ -15,7 +14,7 @@ public class Item extends NetworkContent {
     private String title;
     private String description;
     private double value;
-    private List<BidHistoryInfo> BidHistory;
+    private List<BidHistoryInfo> bidHistory;
     private boolean finalized = false;
     private String winner;
     private String identifier;
@@ -25,7 +24,7 @@ public class Item extends NetworkContent {
         this.title = title;
         this.description = description;
         this.value = initialValue;
-        this.BidHistory = new ArrayList<BidHistoryInfo>();
+        this.bidHistory = new ArrayList<BidHistoryInfo>();
         generateIdentifier();
     }
 
@@ -52,7 +51,7 @@ public class Item extends NetworkContent {
 
     public void addBid(BidHistoryInfo bid) throws ItemFinalized, InvalidBidValue{
         if(!finalized && bid.getValue() >= this.value ) {
-            this.BidHistory.add(bid);
+            this.bidHistory.add(bid);
             this.value = bid.getValue();
         }
         else {
@@ -66,13 +65,17 @@ public class Item extends NetworkContent {
 
     }
 
-    public void finalizeItem(){
-        this.finalized = true;
-        winner = this.BidHistory.get(BidHistory.size() -1).getUser();
+    public void finalizeItem()throws NoBidsException{
+        if(!bidHistory.isEmpty()) {
+            this.finalized = true;
+            winner = this.bidHistory.get(bidHistory.size() - 1).getUser();
+        }else{
+            throw new NoBidsException(this.title);
+        }
     }
 
     public void printBidHistoryInfo(){
-        for(BidHistoryInfo bid : BidHistory) {
+        for(BidHistoryInfo bid : bidHistory) {
             System.out.println();
         }
     }
