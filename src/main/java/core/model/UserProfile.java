@@ -5,14 +5,14 @@ import  java.util.List;
 
 public class UserProfile extends NetworkContent {
     private String password;
-    private List<BidHistoryInfo> myBids;
-    private List<BidHistoryInfo> myPurchases;
+    private List<String> myBids;
+    private List<BidInfo> myPurchases;
 
     public UserProfile(String password){
         super();
         this.password = password;
-        this.myBids = new ArrayList<BidHistoryInfo>();
-        this.myPurchases = new ArrayList<BidHistoryInfo>();
+        this.myBids = new ArrayList<String>();
+        this.myPurchases = new ArrayList<BidInfo>();
     }
 
     public Boolean login(String password){
@@ -22,6 +22,10 @@ public class UserProfile extends NetworkContent {
     @Override
     public String contentType(){
         return "User";
+    }
+
+    public void addMyBid(String id){
+        myBids.add(id);
     }
 
 }
