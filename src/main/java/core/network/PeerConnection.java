@@ -19,6 +19,20 @@ public class PeerConnection {
 
     final private Peer peer;
 
+    public PeerConnection( String myPort )
+            throws Exception {
+
+        Random r = new Random();
+        peer = new PeerMaker(new Number160(r)).setPorts(Integer.parseInt(myPort)).makeAndListen();
+        FutureBootstrap fb = peer.bootstrap().setBroadcast().setPorts(Integer.parseInt(myPort)).start();
+        fb.awaitUninterruptibly();
+        if (fb.getBootstrapTo() != null) {
+            peer.discover().setPeerAddress(fb.getBootstrapTo().iterator().next()).start().awaitUninterruptibly();
+        }
+
+    }
+
+
     public PeerConnection(String ipOtherPeer, String otherPeerPort, String myPort )
             throws Exception {
 
