@@ -21,6 +21,11 @@
             <artifactId>TomP2P</artifactId>
             <version>4.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.aesh</groupId>
+            <artifactId>aesh</artifactId>
+            <version>0.56.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -39,7 +44,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>Main</mainClass>
+                            <mainClass>client.ShellMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
