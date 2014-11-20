@@ -32,44 +32,30 @@ public class ActionMenu {
 
 
         while(true) {
-            System.out.println("Pressione a tecla pretendida:");
+            System.out.println("Choose a action:"  );
             System.out.println("1 - Create new Bid");
             System.out.println("2 - Search for bids");
             System.out.println("3 - My Purchase history");
-            System.out.println("4 - My Bids");
-            System.out.println("5 - Logout");
+            System.out.println("4 - My Bids" ); //list bids and allow bid accept
+            System.out.println("5 - Logout" );
             escolha = br.readLine();
             if (escolha.equals("1")) {
-                System.out.println("Item name:");
-                title = br.readLine();
-                title = title.toLowerCase();
-                System.out.println("Item value:");
-                value = br.readLine();
-                System.out.println("Item description:");
-                description = br.readLine();
-                if(title.isEmpty() || value.isEmpty() || description.isEmpty()){
-                    System.out.println("*Invalid arguments - one is empty!");
-                    continue;
-                }
-                itemId = new Number160(r);
-                Item item = new Item(title, description, Double.parseDouble(value), user);
-                userProfile.addMyBid(itemId.toString());
-                peercore.store(itemId.toString() , item );
-                peercore.store(user , userProfile );
-                //procuramos na DHT pela palavra e adicionamos o id item
-                for(String s: title.split(" ")){
-                    objectInDHT = peercore.get(s);
-                    if(objectInDHT == null){
-                        objectInDHT = new SearchItem();
+                while(true) {
+                    System.out.println("Item name:");
+                    title = br.readLine();
+                    title = title.toLowerCase();
+                    System.out.println("Item value:");
+                    value = br.readLine();
+                    System.out.println("Item description:");
+                    description = br.readLine();
+                    if (title.isEmpty() || value.isEmpty() || description.isEmpty()) {
+                        System.out.println("*Invalid arguments - one is empty!");
+                        continue;
                     }
-                    ((SearchItem)objectInDHT).addReferenceItem(itemId.toString());
-                    peercore.store(s , objectInDHT );
+                    AddItemAction addAction = new AddItemAction(peercore, title, value, description, user, userProfile);
+                    addAction.execute();
+                    break;
                 }
-
-
-
-
-
             }else if (escolha.equals("2")) {
                 SearchAction search = new SearchAction(peercore);
                 search.execute();
@@ -80,6 +66,7 @@ public class ActionMenu {
 
                 while(true) {
                     if (getItems.getResult() != null) {
+                        System.out.println("We found " + getItems.getResult().size() + " results:");
                         System.out.println("0 - Back!");
                         int i = 1;
                         for (Item n : getItems.getResult()) {
@@ -108,8 +95,35 @@ public class ActionMenu {
 
                                 System.out.println("0 - back to main menu" );
                                 System.out.println("1 - View other item" );
+                                System.out.println("2 - Place bid on Item $$$" );
                                 escolha = br.readLine();
                                 if(escolha.equals("0")){
+                                    break;
+                                }
+                                else if(escolha.equals("1")){
+                                    continue;
+                                }
+                                else if(escolha.equals("2")){
+                                    System.out.println("$$$ Please introduce an amount greater than " + bid.getHighBidValue() + " Euros to bid");
+
+                                    while (true) {
+                                        value = br.readLine();
+                                        double bidValue = 0;
+                                        try {
+                                            bidValue = Double.parseDouble(value);
+                                        } catch (Exception e) {
+                                            System.out.println("Not a correct cash amount!");
+                                            System.out.println("Press 0 to go back!");
+                                            continue;
+                                        }
+
+                                        if (bidValue > bid.getHighBidValue()) {
+                                            AddBidAction addBid = new AddBidAction(peercore, bid, bidValue, user, userProfile);
+                                            addBid.execute();
+                                            break;
+                                        }
+                                        System.out.println("*Value is too low, please pick a number greater than " +bid.getHighBidValue() + " Euros");
+                                    }
                                     break;
                                 }
                             }

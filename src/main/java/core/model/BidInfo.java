@@ -16,8 +16,7 @@ public class BidInfo implements Serializable {
         this.value = value;
     }
 
-    public BidInfo(String title, double value, String user){
-        this.title = title;
+    public BidInfo(double value, String user){
         this.value = value;
         this.user = user;
     }

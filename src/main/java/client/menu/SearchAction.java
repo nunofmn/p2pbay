@@ -67,14 +67,15 @@ public class SearchAction {
                     }
                 }
             } else if(words[0].toLowerCase().equals("not")){
-
+                result = resultsWord1;
+                result.removeAll(resultsWord2);
             }
 
 
             //mostrar resultados
             if(result != null) {
                 this.results = result;
-                System.out.println("We found " + result.size() + " results:");
+
             }
 
         }else{

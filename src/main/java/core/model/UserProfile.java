@@ -28,4 +28,8 @@ public class UserProfile extends NetworkContent {
         myBids.add(id);
     }
 
+    public void addMyPurchases(BidInfo item){
+        this.myPurchases.add(item);
+    }
+
 }
