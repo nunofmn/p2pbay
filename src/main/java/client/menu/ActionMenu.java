@@ -71,60 +71,55 @@ public class ActionMenu {
 
 
             }else if (escolha.equals("2")) {
-                System.out.println("Type the item name you want to see: (ex: AND ipod 32gb)");
-                title = br.readLine();
-                title = title.toLowerCase();
-                String[] words = title.split(" ");
+                SearchAction search = new SearchAction(peercore);
+                search.execute();
 
-                if(words.length == 3){
-                    List<String> resultsWord1 = null;
-                    List<String> resultsWord2 = null;
-                    List<String> result = null;
-                    objectInDHT = peercore.get(words[1]);
-                    if(objectInDHT != null && objectInDHT.contentType().equals("Search")){
-                        resultsWord1 = ((SearchItem)objectInDHT).getAllItemsReferenced();
-                    }else{
-                        resultsWord1 = new ArrayList<String>();
-                    }
-                    objectInDHT = peercore.get(words[2]);
-                    if(objectInDHT != null && objectInDHT.contentType().equals("Search")){
-                        resultsWord2 = ((SearchItem)objectInDHT).getAllItemsReferenced();
-                    }else{
-                        resultsWord2 = new ArrayList<String>();
-                    }
-                    if(words[0].toLowerCase().equals("or")){ //union
-                        //Como e um AND um dos conjuntos pode estar vazio
-                        Set<String> set = new HashSet<String>();
-                        set.addAll(resultsWord1);
-                        set.addAll(resultsWord2);
-                        result = new ArrayList<String>(set);
+                GetItemsAction getItems = new GetItemsAction(peercore);
+                getItems.addList(search.getResults());
+                getItems.execute();
 
-                    }else if(words[0].toLowerCase().equals("and")){ //intersection
-                        result = new ArrayList<String>();
-                        for(String s : resultsWord1){
-                            if(resultsWord2.contains(s)){
-                                result.add(s);
+                while(true) {
+                    if (getItems.getResult() != null) {
+                        System.out.println("0 - Back!");
+                        int i = 1;
+                        for (Item n : getItems.getResult()) {
+                            System.out.println(i + " - " + n.getTitle());
+                            i++;
+                        }
+                        System.out.println("Press a key:");
+                        escolha = br.readLine();
+                        if(escolha.equals("0")){
+                            break;
+                        }else {
+                            i = -1;
+                            try{
+                                i = Integer.parseInt(escolha);
+                            }catch (Exception e){
+                                System.out.println("Pressed key not valid!");
+                            }
+
+                            if(i > 0 && i <= getItems.getResult().size()){
+                                i = i-1; // como o 0 serve para sair
+                                Item bid = getItems.getResult().get(i);
+                                System.out.println("Title: " + bid.getTitle());
+                                System.out.println("Description: " + bid.getDescription());
+                                System.out.println("Bid History: ");
+                                bid.printBidHistoryInfo();
+
+                                System.out.println("0 - back to main menu" );
+                                System.out.println("1 - View other item" );
+                                escolha = br.readLine();
+                                if(escolha.equals("0")){
+                                    break;
+                                }
                             }
                         }
-                    } else if(words[0].toLowerCase().equals("not")){
-
+                    } else {
+                        System.out.println("No search results, try a different query.");
+                        break;
                     }
 
-
-                    //mostrar resultados
-                    if(result != null) {
-                        System.out.println("We found " + result.size() + " results:");
-                        for (String s : result) {
-                            System.out.println("Id: " + s);
-
-                        }
-                        System.out.println("Temos de de po-lo a ir buscar os titulos à DHT, talvez");
-                    }
-
-                }else{
-                    System.out.println("Too many words... please write only two words and an boolean operation");
                 }
-
 
 
             }

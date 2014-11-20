@@ -86,5 +86,10 @@ public class Item extends NetworkContent {
         return owner;
     }
 
+    @Override
+    public String contentType(){
+        return "Item";
+    }
+
 }
 
