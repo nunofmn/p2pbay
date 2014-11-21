@@ -9,9 +9,6 @@ import net.tomp2p.peers.Number160;
 
 import java.util.Random;
 
-/**
- * Created by EngSoftware on 20-11-2014.
- */
 public class AddItemAction {
 
     private PeerConnection peercore;

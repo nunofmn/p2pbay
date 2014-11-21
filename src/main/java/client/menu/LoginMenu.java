@@ -8,19 +8,17 @@ import core.network.PeerConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-/**
- * Created by EngSoftware on 05-11-2014.
- */
 public class LoginMenu {
 
-    public LoginMenu(){
+    private String user;
+    private NetworkContent userProfile;
 
+    public LoginMenu(){
     }
 
     public void display(PeerConnection peercore) throws NumberFormatException, Exception{
 
-        String user, escolha, pass;
-        NetworkContent userProfile;
+        String escolha, pass;
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Bem vindo a' sua loja P2P  - Leiloes");
@@ -43,8 +41,7 @@ public class LoginMenu {
                     if (((UserProfile) userProfile).login(pass)) {
                         System.out.println("Login  - Sucesso!");
                         System.out.println("Login  - Mostrar mais menu agora!");
-                        ActionMenu action = new ActionMenu();
-                        action.display(peercore, user, ((UserProfile)userProfile));
+                        return;
                     } else {
                         System.out.println("*Login  - password errada !");
                     }
@@ -77,8 +74,17 @@ public class LoginMenu {
                 System.exit(0);
             }
 
-            System.out.println("P2PBay - Coming Soon");
         }
     }
+
+    public String getUsername() {
+        return user;
+    }
+
+    public UserProfile getUserProfile() {
+       return (UserProfile)userProfile;
+    }
+
+
 
 }

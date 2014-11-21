@@ -1,5 +1,7 @@
 package client.commands;
 
+import core.model.UserProfile;
+import core.network.PeerConnection;
 import org.jboss.aesh.cl.Arguments;
 import org.jboss.aesh.cl.CommandDefinition;
 import org.jboss.aesh.console.command.Command;
@@ -18,6 +20,19 @@ public class AcceptBid implements Command{
     private List<Resource> arguments;
 
     private Shell shell;
+
+    private PeerConnection peer;
+
+    private UserProfile user;
+
+    private String username;
+
+    public AcceptBid(PeerConnection peer, UserProfile user, String username) {
+        super();
+        this.peer = peer;
+        this.user = user;
+        this.username = username;
+    }
 
     @Override
     public CommandResult execute(CommandInvocation commandInvocation) throws IOException, InterruptedException {

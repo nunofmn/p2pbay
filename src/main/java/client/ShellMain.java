@@ -1,9 +1,13 @@
 package client;
 
 import client.commands.*;
+import client.menu.LoginMenu;
+import core.model.UserProfile;
+import core.network.PeerConnection;
 import org.jboss.aesh.console.AeshConsole;
 import org.jboss.aesh.console.AeshConsoleBuilder;
 import org.jboss.aesh.console.Prompt;
+import org.jboss.aesh.console.command.Command;
 import org.jboss.aesh.console.command.registry.AeshCommandRegistryBuilder;
 import org.jboss.aesh.console.command.registry.CommandRegistry;
 import org.jboss.aesh.console.settings.Settings;
@@ -14,22 +18,51 @@ import org.jboss.aesh.terminal.TerminalString;
 
 public class ShellMain {
 
-    public static void main(String[] args) {
+    private static PeerConnection peer;
+    private static UserProfile user;
+    private static String username;
+
+    public static void main(String[] args) throws Exception {
+
+        if (args.length == 3) {
+            peer = new PeerConnection(args[0], args[1], args[2]);
+        }
+        if (args.length == 1) {
+            peer = new PeerConnection(args[0]);
+        }
+
+        //Login
+        LoginMenu login = new LoginMenu();
+        login.display(peer);
+        user = login.getUserProfile();
+        username = login.getUsername();
+
         SettingsBuilder builder = new SettingsBuilder().logging(true);
         builder.enableMan(false)
                 .readInputrc(false);
 
         Settings settings = builder.create();
 
+
+        //User interface
+        Command createAccount = new CreateAccount(peer,user,username);
+        Command sellItem = new SellItem(peer,user,username);
+        Command acceptBid = new AcceptBid(peer,user,username);
+        Command searchItem = new SearchItem(peer,user,username);
+        Command bidItem = new BidItem(peer,user,username);
+        Command viewItem = new ViewItem(peer,user,username);
+        Command viewPurchase = new ViewPurchase(peer,user,username);
+        Command biddingHistory = new BiddingHistory(peer,user,username);
+
         CommandRegistry registry = new AeshCommandRegistryBuilder()
-                .command(CreateAccount.class)
-                .command(SellItem.class)
-                .command(AcceptBid.class)
-                .command(SearchItem.class)
-                .command(BidItem.class)
-                .command(ViewItem.class)
-                .command(ViewPurchase.class)
-                .command(BiddingHistory.class)
+                .command(createAccount)
+                .command(sellItem)
+                .command(acceptBid)
+                .command(searchItem)
+                .command(bidItem)
+                .command(viewItem)
+                .command(viewPurchase)
+                .command(biddingHistory)
                 .create();
 
         AeshConsole aeshConsole = new AeshConsoleBuilder()
