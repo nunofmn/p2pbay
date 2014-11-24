@@ -146,7 +146,7 @@ public class SearchItem implements Command {
 
                         //save bid
                         showitem.addBid(new BidInfo(Double.parseDouble(bidvalue),this.username));
-                        this.user.addMyPurchases(new BidInfo(showitem.getTitle(), Double.parseDouble(bidvalue)));
+                        this.user.addMyPurchases(new BidInfo(showitem.getTitle(), Double.parseDouble(bidvalue), showitem.getUnHashedKey()));
                         peer.store(showitem.getUnHashedKey(), showitem);
                         peer.store(this.username, this.user);
                         shell.out().println("Bid successfully placed");
