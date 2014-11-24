@@ -112,6 +112,16 @@ public class SearchItem implements Command {
                     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
                     String option = br.readLine();
 
+
+                    try {
+                        if (Integer.parseInt(option) == 0) {
+                            return CommandResult.FAILURE;
+                        }
+                    }catch(NumberFormatException e) {
+                        shell.out().println("Invalid option");
+                        return CommandResult.FAILURE;
+                    }
+
                     //show item TODO - Refactor to another class
                     Item showitem = items.get(Integer.parseInt(option)-1);
                     shell.out().println("Title: " + showitem.getTitle());
