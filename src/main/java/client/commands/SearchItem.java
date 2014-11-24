@@ -135,6 +135,29 @@ public class SearchItem implements Command {
                     } else {
                         System.out.println("No bids were made. Minimum bid is " + showitem.getValue() + " Euros.");
                     }
+
+                    //bid on item
+                    shell.out().println("Bid on item? (y/n)");
+                    String bidoption = br.readLine();
+
+                    if(bidoption.toString().equals("y")){
+                        shell.out().println("Bid value (minimum: " + showitem.getHighBidValue() + "):");
+                        String bidvalue = br.readLine();
+
+                        //save bid
+                        showitem.addBid(new BidInfo(Double.parseDouble(bidvalue),this.username));
+                        this.user.addMyPurchases(new BidInfo(showitem.getTitle(), Double.parseDouble(bidvalue)));
+                        peer.store(showitem.getUnHashedKey(), showitem);
+                        peer.store(this.username, this.user);
+                        shell.out().println("Bid successfully placed");
+
+                    }else if(bidoption.toString().equals("n")) {
+                        return CommandResult.SUCCESS;
+                    }else{
+                        shell.out().println("Invalid option");
+                        return CommandResult.FAILURE;
+                    }
+
                 }else{
                     shell.out().println("No items to show");
                 }

@@ -51,10 +51,10 @@ public class ShellMain {
 
         //User interface
         Command gossipTest = new GossipTest(peer,user,username,gossip);
+        Command numberOfPeers = new NumberOfPeers(peer,user,username,gossip);
         Command sellItem = new SellItem(peer,user,username);
         Command acceptBid = new AcceptBid(peer,user,username);
         Command searchItem = new SearchItem(peer,user,username);
-        Command bidItem = new BidItem(peer,user,username);
         Command viewItem = new ViewItem(peer,user,username);
         Command viewPurchase = new ViewPurchase(peer,user,username);
         Command biddingHistory = new BiddingHistory(peer,user,username);
@@ -62,10 +62,10 @@ public class ShellMain {
 
         CommandRegistry registry = new AeshCommandRegistryBuilder()
                 .command(gossipTest)
+                .command(numberOfPeers)
                 .command(sellItem)
                 .command(acceptBid)
                 .command(searchItem)
-                .command(bidItem)
                 .command(viewItem)
                 .command(viewPurchase)
                 .command(biddingHistory)

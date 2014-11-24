@@ -3,6 +3,7 @@ package client.commands;
 import core.model.UserProfile;
 import core.network.PeerConnection;
 import gossip.GossipConnect;
+import gossip.GossipMessage;
 import org.jboss.aesh.cl.Arguments;
 import org.jboss.aesh.cl.CommandDefinition;
 import org.jboss.aesh.console.command.Command;
@@ -13,6 +14,7 @@ import org.jboss.aesh.terminal.Shell;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Future;
 
 @CommandDefinition(name="gossip", description ="test gossip protocol")
 public class GossipTest implements Command {
@@ -44,7 +46,10 @@ public class GossipTest implements Command {
 
         shell.out().println("Gossip test command!");
 
-        gossip.sendMessage("Teste!");
+        gossip.sendMessage(new GossipMessage(0.5,0.5,0));
+
+        gossip.setWeight(0.5);
+        gossip.setSum(0.5);
 
         return null;
     }

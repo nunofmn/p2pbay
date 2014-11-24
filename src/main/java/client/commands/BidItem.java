@@ -27,6 +27,7 @@ public class BidItem implements Command {
 
     private String username;
 
+
     public BidItem(PeerConnection peer, UserProfile user, String username) {
         super();
         this.peer = peer;
@@ -39,7 +40,7 @@ public class BidItem implements Command {
 
         this.shell = commandInvocation.getShell();
 
-        shell.out().println("Bid item command");
+        shell.out().println("Bid successfully placed!");
 
         return null;
     }
