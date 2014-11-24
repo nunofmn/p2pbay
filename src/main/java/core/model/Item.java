@@ -1,13 +1,8 @@
 package core.model;
 import core.exception.*;
 
-import javax.xml.bind.DatatypeConverter;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import  java.util.List;
-import java.util.Random;
 
 public class Item extends NetworkContent {
 
@@ -53,7 +48,7 @@ public class Item extends NetworkContent {
     public void finalizeItem()throws NoBidsException{
         if(!bidHistory.isEmpty()) {
             this.finalized = true;
-            winner = this.bidHistory.get(bidHistory.size() - 1).getUser();
+            winner = this.bidHistory.get(bidHistory.size() - 1).getHashId();
         }else{
             throw new NoBidsException(this.title);
         }

@@ -24,7 +24,7 @@ public class AddBidAction {
 
     public void execute() throws Exception{
         item.addBid(new BidInfo(value, user));
-        this.userProfile.addMyPurchases(new BidInfo(item.getTitle(), value));
+        this.userProfile.addMyPurchases(new BidInfo(item.getTitle(), value, item.getUnHashedKey()));
         peercore.store(item.getUnHashedKey(), item); //saves new bid
         peercore.store(user, userProfile);
         System.out.println("--Bid sucessfuly placed!--");

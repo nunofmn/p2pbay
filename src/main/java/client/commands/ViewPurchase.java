@@ -1,5 +1,7 @@
 package client.commands;
 
+import core.model.BidInfo;
+import core.model.Item;
 import core.model.UserProfile;
 import core.network.PeerConnection;
 import org.jboss.aesh.cl.Arguments;
@@ -37,6 +39,18 @@ public class ViewPurchase implements Command {
     public CommandResult execute(CommandInvocation commandInvocation) throws IOException, InterruptedException {
 
         this.shell = commandInvocation.getShell();
+
+        //ir ao bidhistory e percorrer todas e ver se ganhei alguma
+
+        for(BidInfo bid : user.getMyBidHistory()){
+            try {
+                Item item = (Item)peer.get(bid.getHashId());
+                if(item.getWinner().equals(username))
+                    shell.out().println("You purchased " + bid.getTitle() + ", so spent " +  bid.getValue() + " Euros." );
+            }catch(Exception e){
+            }
+        }
+
 
         shell.out().println("View purchase command");
 

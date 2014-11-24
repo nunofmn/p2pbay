@@ -9,16 +9,17 @@ public class BidInfo implements Serializable {
 
     private String title;
     private double value;
-    private String user;
+    private String hashId;
 
-    public BidInfo(String title, double value){
+    public BidInfo(String title, double value, String hashId){
         this.title = title;
         this.value = value;
+        this.hashId = hashId;
     }
 
-    public BidInfo(double value, String user){
+    public BidInfo(double value, String hashId){
         this.value = value;
-        this.user = user;
+        this.hashId = hashId;
     }
 
     public String getTitle() {
@@ -37,11 +38,11 @@ public class BidInfo implements Serializable {
         this.value = value;
     }
 
-    public String getUser() {
-        return user;
+    public String getHashId() {
+        return hashId;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setHashId(String hashId) {
+        this.hashId = hashId;
     }
 }

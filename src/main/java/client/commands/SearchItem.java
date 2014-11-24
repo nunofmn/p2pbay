@@ -13,7 +13,6 @@ import org.jboss.aesh.console.command.invocation.CommandInvocation;
 import org.jboss.aesh.io.Resource;
 import org.jboss.aesh.terminal.Shell;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -131,7 +130,7 @@ public class SearchItem implements Command {
                     //show item bids TODO - Refactor to another class
                     if (!showitem.getBidHistoryInfo().isEmpty()) {
                         for (BidInfo bid : showitem.getBidHistoryInfo()) {
-                            shell.out().println("User: " + bid.getUser() + " bidded " + bid.getValue() + " Euros.");
+                            shell.out().println("User: " + bid.getHashId() + " bidded " + bid.getValue() + " Euros.");
                         }
                     } else {
                         System.out.println("No bids were made. Minimum bid is " + showitem.getValue() + " Euros.");

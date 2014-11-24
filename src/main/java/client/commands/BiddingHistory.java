@@ -1,5 +1,6 @@
 package client.commands;
 
+import core.model.BidInfo;
 import core.model.UserProfile;
 import core.network.PeerConnection;
 import org.jboss.aesh.cl.Arguments;
@@ -39,7 +40,13 @@ public class BiddingHistory implements Command{
 
         this.shell = commandInvocation.getShell();
 
-        shell.out().println("Bidding history command");
+        for(BidInfo bid : user.getMyBidHistory()){
+            shell.out().println("You bidded " + bid.getValue() + " Euros on item: " + bid.getTitle());
+        }
+
+
+
+        //shell.out().println("Bidding history command");
 
         return null;
     }
