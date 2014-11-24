@@ -49,8 +49,8 @@ public class SellItem implements Command {
         Random r = new Random();
         itemId = new Number160(r);
 
-        String title = arguments.get(0).toString();
-        String description = arguments.get(1).toString();
+        String title = arguments.get(0).toString().replace("\"", "");
+        String description = arguments.get(1).toString().replace("\"", "");
         Double minimumbid = Double.parseDouble(arguments.get(2).toString());
 
         shell.out().println("Arguments: " + title + " " + description + " " + minimumbid);

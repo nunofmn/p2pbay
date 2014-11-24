@@ -61,11 +61,14 @@ public class Item extends NetworkContent {
 
     public void printBidHistoryInfo(){
         for(BidInfo bid : bidHistory) {
-            System.out.println("User: " + bid.getUser() + " bidded " + bid.getValue() + " Euros.");
         }
         if(bidHistorySize() == 0){
             System.out.println("No bids were made. Minimum bid is " + this.getValue() + " Euros.");
         }
+    }
+
+    public List<BidInfo> getBidHistoryInfo() {
+        return this.bidHistory;
     }
 
     public double getHighBidValue(){

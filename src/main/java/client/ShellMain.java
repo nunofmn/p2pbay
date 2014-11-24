@@ -4,6 +4,8 @@ import client.commands.*;
 import client.menu.LoginMenu;
 import core.model.UserProfile;
 import core.network.PeerConnection;
+import gossip.GossipConnect;
+import org.apache.logging.log4j.LogManager;
 import org.jboss.aesh.console.AeshConsole;
 import org.jboss.aesh.console.AeshConsoleBuilder;
 import org.jboss.aesh.console.Prompt;
@@ -15,12 +17,14 @@ import org.jboss.aesh.console.settings.SettingsBuilder;
 import org.jboss.aesh.terminal.Color;
 import org.jboss.aesh.terminal.TerminalColor;
 import org.jboss.aesh.terminal.TerminalString;
+import org.apache.logging.log4j.Logger;
 
 public class ShellMain {
 
     private static PeerConnection peer;
     private static UserProfile user;
     private static String username;
+    final static Logger logger = LogManager.getLogger(ShellMain.class);
 
     public static void main(String[] args) throws Exception {
 
@@ -37,15 +41,16 @@ public class ShellMain {
         user = login.getUserProfile();
         username = login.getUsername();
 
+        GossipConnect gossip = new GossipConnect(peer.getPeer());
+
         SettingsBuilder builder = new SettingsBuilder().logging(true);
         builder.enableMan(false)
                 .readInputrc(false);
 
         Settings settings = builder.create();
 
-
         //User interface
-        Command createAccount = new CreateAccount(peer,user,username);
+        Command gossipTest = new GossipTest(peer,user,username,gossip);
         Command sellItem = new SellItem(peer,user,username);
         Command acceptBid = new AcceptBid(peer,user,username);
         Command searchItem = new SearchItem(peer,user,username);
@@ -54,8 +59,9 @@ public class ShellMain {
         Command viewPurchase = new ViewPurchase(peer,user,username);
         Command biddingHistory = new BiddingHistory(peer,user,username);
 
+
         CommandRegistry registry = new AeshCommandRegistryBuilder()
-                .command(createAccount)
+                .command(gossipTest)
                 .command(sellItem)
                 .command(acceptBid)
                 .command(searchItem)

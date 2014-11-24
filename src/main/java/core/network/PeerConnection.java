@@ -8,6 +8,8 @@ import net.tomp2p.futures.FutureDiscover;
 import net.tomp2p.p2p.Peer;
 import net.tomp2p.p2p.PeerMaker;
 import net.tomp2p.peers.Number160;
+import net.tomp2p.peers.PeerAddress;
+import net.tomp2p.rpc.ObjectDataReply;
 import net.tomp2p.storage.Data;
 
 import java.io.IOException;
@@ -52,6 +54,7 @@ public class PeerConnection {
         if(futureBootstrap.getBootstrapTo() != null) {
             peer.discover().setPeerAddress(futureBootstrap.getBootstrapTo().iterator().next()).start().awaitUninterruptibly();
         }
+
     }
 
     public Peer getPeer() {
