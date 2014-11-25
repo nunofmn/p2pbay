@@ -23,6 +23,11 @@ import java.util.Set;
 
 @CommandDefinition(name="search", description ="search for an item")
 public class SearchItem implements Command {
+
+    private static final String AND = "and";
+    private static final String OR = "or";
+    private static final String NOT = "not";
+
     @Arguments
     private List<Resource> arguments;
 
@@ -41,6 +46,35 @@ public class SearchItem implements Command {
         this.username = username;
     }
 
+    private boolean isOperand(String operand){
+        return !operand.equals(AND)  && !operand.equals(OR) && !operand.equals(NOT);
+    }
+
+    private boolean isOperator(String operator){
+        return operator.equals(AND) || operator.equals(OR) || operator.equals(NOT);
+    }
+
+    private List<String> computeOperator(String operator, List<String> operand1, List<String> operand2){
+        List<String> result = new ArrayList<String>();
+        if (operator.equals(OR)) { //union
+            //Como e um AND um dos conjuntos pode estar vazio
+            Set<String> set = new HashSet<String>();
+            set.addAll(operand1);
+            set.addAll(operand2);
+            result = new ArrayList<String>(set);
+        } else if (operator.equals(AND)) { //intersection
+            for (String s : operand2) {
+                if (operand1.contains(s)) {
+                    result.add(s);
+                }
+            }
+        } else if (operator.equals(NOT)) {
+            result = operand2;
+            result.removeAll(operand1);
+        }
+        return result;
+    }
+
     @Override
     public CommandResult execute(CommandInvocation commandInvocation) throws IOException, InterruptedException {
 
@@ -49,39 +83,32 @@ public class SearchItem implements Command {
         NetworkContent objectInDHT;
 
         try {
-
-            if (arguments.size() == 3) {
-                List<String> resultsWord1 = null;
-                List<String> resultsWord2 = null;
+                List<String> operandGetResult = null;
                 List<String> result = null;
-                objectInDHT = peer.get(arguments.get(1).toString());
-                if (objectInDHT != null && objectInDHT.contentType().equals("Search")) {
-                    resultsWord1 = ((core.model.SearchItem) objectInDHT).getAllItemsReferenced();
-                } else {
-                    resultsWord1 = new ArrayList<String>();
-                }
-                objectInDHT = peer.get(arguments.get(2).toString());
-                if (objectInDHT != null && objectInDHT.contentType().equals("Search")) {
-                    resultsWord2 = ((core.model.SearchItem) objectInDHT).getAllItemsReferenced();
-                } else {
-                    resultsWord2 = new ArrayList<String>();
-                }
-                if (arguments.get(0).toString().toLowerCase().equals("or")) { //union
-                    //Como e um AND um dos conjuntos pode estar vazio
-                    Set<String> set = new HashSet<String>();
-                    set.addAll(resultsWord1);
-                    set.addAll(resultsWord2);
-                } else if (arguments.get(0).toString().toLowerCase().equals("and")) { //intersection
-                    result = new ArrayList<String>();
-                    for (String s : resultsWord1) {
-                        if (resultsWord2.contains(s)) {
-                            result.add(s);
+                List<List<String>> stack = new ArrayList<List<String>>();
+                List<String> operand1, operand2;
+                String symbol;
+
+                for(int i= arguments.size() - 1; i >= 0; i--){
+                    symbol = arguments.get(i).toString().toLowerCase();
+                    if(isOperand(symbol)){
+                        objectInDHT = peer.get(symbol);
+                        if (objectInDHT != null && objectInDHT.contentType().equals("Search")) {
+                            operandGetResult = ((core.model.SearchItem) objectInDHT).getAllItemsReferenced();
+                        } else {
+                            operandGetResult = new ArrayList<String>();
                         }
+                        stack.add(operandGetResult);
+                    } else if(isOperator(symbol)){
+                        operand1 = stack.remove(stack.size()-1);
+                        operand2 = stack.remove(stack.size()-1);
+                        stack.add(computeOperator(symbol , operand1, operand2));
+
                     }
-                } else if (arguments.get(0).toString().toLowerCase().equals("not")) {
-                    result = resultsWord1;
-                    result.removeAll(resultsWord2);
                 }
+
+                result = stack.remove(0);
+
 
                 // get items from results TODO - Refactor to another class
                 List<Item> items = new ArrayList<Item>();
@@ -162,9 +189,7 @@ public class SearchItem implements Command {
                     shell.out().println("No items to show");
                 }
 
-            } else {
-                System.out.println("Too many words... please write only two words and an boolean operation");
-            }
+
 
         }catch(ClassNotFoundException e) {
             System.out.println("Didnt find word in DHT.");
