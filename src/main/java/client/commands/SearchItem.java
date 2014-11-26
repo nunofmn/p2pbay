@@ -88,6 +88,7 @@ public class SearchItem implements Command {
                 List<List<String>> stack = new ArrayList<List<String>>();
                 List<String> operand1, operand2;
                 String symbol;
+                Item itemRealTime;
 
                 for(int i= arguments.size() - 1; i >= 0; i--){
                     symbol = arguments.get(i).toString().toLowerCase();
@@ -150,17 +151,18 @@ public class SearchItem implements Command {
 
                     //show item TODO - Refactor to another class
                     Item showitem = items.get(Integer.parseInt(option)-1);
-                    shell.out().println("Title: " + showitem.getTitle());
-                    shell.out().println("Description: " + showitem.getDescription());
+                    itemRealTime = (Item)peer.get(showitem.getUnHashedKey()); //we retrieve the item again so it is current
+                    shell.out().println("Title: " + itemRealTime.getTitle());
+                    shell.out().println("Description: " + itemRealTime.getDescription());
                     shell.out().println("Bid History:");
 
                     //show item bids TODO - Refactor to another class
-                    if (!showitem.getBidHistoryInfo().isEmpty()) {
-                        for (BidInfo bid : showitem.getBidHistoryInfo()) {
+                    if (!itemRealTime.getBidHistoryInfo().isEmpty()) {
+                        for (BidInfo bid : itemRealTime.getBidHistoryInfo()) {
                             shell.out().println("User: " + bid.getHashId() + " bidded " + bid.getValue() + " Euros.");
                         }
                     } else {
-                        System.out.println("No bids were made. Minimum bid is " + showitem.getValue() + " Euros.");
+                        System.out.println("No bids were made. Minimum bid is " + itemRealTime.getValue() + " Euros.");
                     }
 
                     //bid on item
@@ -171,16 +173,19 @@ public class SearchItem implements Command {
                         shell.out().println("Bid value (minimum: " + showitem.getHighBidValue() + "):");
                         String bidvalue = br.readLine();
 
+                        itemRealTime = (Item)peer.get(showitem.getUnHashedKey());
+
                         //save bid
-                        showitem.addBid(new BidInfo(Double.parseDouble(bidvalue),this.username));
-                        this.user.addMyPurchases(new BidInfo(showitem.getTitle(), Double.parseDouble(bidvalue), showitem.getUnHashedKey()));
-                        peer.store(showitem.getUnHashedKey(), showitem);
+                        itemRealTime.addBid(new BidInfo(Double.parseDouble(bidvalue),this.username));
+                        this.user.addMyPurchases(new BidInfo(itemRealTime.getTitle(), Double.parseDouble(bidvalue), showitem.getUnHashedKey()));
+                        peer.store(itemRealTime.getUnHashedKey(), itemRealTime);
                         peer.store(this.username, this.user);
                         shell.out().println("Bid successfully placed");
 
                     }else if(bidoption.toString().equals("n")) {
                         return CommandResult.SUCCESS;
                     }else{
+
                         shell.out().println("Invalid option");
                         return CommandResult.FAILURE;
                     }

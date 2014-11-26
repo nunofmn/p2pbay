@@ -58,6 +58,7 @@ public class ShellMain {
         Command viewItem = new ViewItem(peer,user,username);
         Command viewPurchase = new ViewPurchase(peer,user,username);
         Command biddingHistory = new BiddingHistory(peer,user,username);
+        Command exit = new ExitCommand();
 
 
         CommandRegistry registry = new AeshCommandRegistryBuilder()
@@ -69,6 +70,7 @@ public class ShellMain {
                 .command(viewItem)
                 .command(viewPurchase)
                 .command(biddingHistory)
+                .command(ExitCommand.class)
                 .create();
 
         AeshConsole aeshConsole = new AeshConsoleBuilder()
