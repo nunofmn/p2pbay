@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 @CommandDefinition(name="search", description ="search for an item")
-public class SearchItem implements Command {
+public class SearchAndBidItem implements Command {
 
     private static final String AND = "and";
     private static final String OR = "or";
@@ -39,7 +39,7 @@ public class SearchItem implements Command {
 
     private String username;
 
-    public SearchItem(PeerConnection peer, UserProfile user, String username) {
+    public SearchAndBidItem(PeerConnection peer, UserProfile user, String username) {
         super();
         this.peer = peer;
         this.user = user;
@@ -176,8 +176,9 @@ public class SearchItem implements Command {
                         itemRealTime = (Item)peer.get(showitem.getUnHashedKey());
 
                         //save bid
-                        itemRealTime.addBid(new BidInfo(Double.parseDouble(bidvalue),this.username));
-                        this.user.addMyPurchases(new BidInfo(itemRealTime.getTitle(), Double.parseDouble(bidvalue), showitem.getUnHashedKey()));
+                        BidInfo bid = new BidInfo(this.username, itemRealTime.getTitle(), Double.parseDouble(bidvalue), showitem.getUnHashedKey());
+                        itemRealTime.addBid(bid);
+                        this.user.addMyPurchases(bid);
                         peer.store(itemRealTime.getUnHashedKey(), itemRealTime);
                         peer.store(this.username, this.user);
                         shell.out().println("Bid successfully placed");

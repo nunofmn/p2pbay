@@ -54,10 +54,11 @@ public class ShellMain {
         Command numberOfPeers = new NumberOfPeers(peer,user,username,gossip);
         Command sellItem = new SellItem(peer,user,username);
         Command acceptBid = new AcceptBid(peer,user,username);
-        Command searchItem = new SearchItem(peer,user,username);
+        Command searchItem = new SearchAndBidItem(peer,user,username);
         Command viewItem = new ViewItem(peer,user,username);
         Command viewPurchase = new ViewPurchase(peer,user,username);
         Command biddingHistory = new BiddingHistory(peer,user,username);
+        Command showMyItem = new ShowMyItem(peer,user,username);
         Command exit = new ExitCommand();
 
 
@@ -70,6 +71,7 @@ public class ShellMain {
                 .command(viewItem)
                 .command(viewPurchase)
                 .command(biddingHistory)
+                .command(showMyItem)
                 .command(ExitCommand.class)
                 .create();
 
