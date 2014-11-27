@@ -45,13 +45,19 @@ public class ViewPurchase implements Command {
 
         //ir ao bidhistory e percorrer todas e ver se ganhei alguma
 
-        for(BidInfo bid : user.getMyBidHistory()){
-            try {
-                Item item = (Item)peer.get(bid.getHashId(), ITEM);
-                if(item.getWinner().equals(username))
-                    shell.out().println("You purchased " + bid.getTitle() + ", so spent " +  bid.getValue() + " Euros." );
-            }catch(Exception e){
+        if(!user.getMyBidHistory().isEmpty()) {
+
+            for (BidInfo bid : user.getMyBidHistory()) {
+                try {
+                    Item item = (Item) peer.get(bid.getHashId(), ITEM);
+                    if (item.getWinner().equals(username))
+                        shell.out().println("You purchased " + bid.getTitle() + ", so spent " + bid.getValue() + " Euros.");
+                } catch (Exception e) {
+                }
             }
+        }else{
+            shell.out().println("You have no purchases.");
+
         }
 
 

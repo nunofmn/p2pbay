@@ -45,7 +45,7 @@ public class ShowMyItem implements Command{
     @Override
     public CommandResult execute(CommandInvocation commandInvocation) throws IOException, InterruptedException {
 
-
+/*
         this.shell = commandInvocation.getShell();
 
         List<Item> items = new ArrayList<Item>();
@@ -113,7 +113,7 @@ public class ShowMyItem implements Command{
 
         shell.out().println("Accept bid command");
 
-
+*/
         return null;
     }
 }

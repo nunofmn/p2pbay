@@ -176,14 +176,22 @@ public class SearchAndBidItem implements Command {
 
                     if(bidoption.toString().equals("y")){
                         shell.out().println("Bid value (minimum: " + currentPrice + "):");
-                        String bidvalue = br.readLine();
 
+                        while(true) {
+                            String bidvalue = br.readLine();
 
-                        peer.addToList(showitem.getUnHashedBidListId(), new BidInfo(Double.parseDouble(bidvalue),this.username), BID);
-                        this.user.addMyPurchases(new BidInfo(showitem.getTitle(), Double.parseDouble(bidvalue), showitem.getUnHashedKey()));
+                            if (Double.parseDouble(bidvalue) > currentPrice) {
 
-                        peer.store(this.username, this.user, USER);
-                        shell.out().println("Bid successfully placed");
+                                peer.addToList(showitem.getUnHashedBidListId(), new BidInfo(Double.parseDouble(bidvalue), this.username), BID);
+                                this.user.addMyPurchases(new BidInfo(showitem.getTitle(), Double.parseDouble(bidvalue), showitem.getUnHashedKey()));
+
+                                peer.store(this.username, this.user, USER);
+                                shell.out().println("Bid successfully placed");
+                                break;
+                            } else {
+                                shell.out().println("*Value is too low, you need more than " + currentPrice + " Euros");
+                            }
+                        }
 
                     }else if(bidoption.toString().equals("n")) {
                         return CommandResult.SUCCESS;
