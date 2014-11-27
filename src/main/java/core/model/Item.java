@@ -29,6 +29,9 @@ public class Item extends NetworkContent {
     }
 
 
+    public boolean isFinalized(){
+        return this.finalized;
+    }
 
 
     public void finalizeItem(String winner)throws NoBidsException{

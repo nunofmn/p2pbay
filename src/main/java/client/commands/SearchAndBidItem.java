@@ -120,7 +120,7 @@ public class SearchAndBidItem implements Command {
 
                     for(String itemkey : result) {
                         NetworkContent getitem = peer.get(itemkey, ITEM);
-                        if(getitem != null && getitem.contentType().equals("Item")) {
+                        if(getitem != null && getitem.contentType().equals("Item") && !((Item)getitem).isFinalized()) {
                             items.add((Item)getitem);
                         }
                     }
