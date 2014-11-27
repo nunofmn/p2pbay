@@ -183,7 +183,7 @@ public class SearchAndBidItem implements Command {
                             if (Double.parseDouble(bidvalue) > currentPrice) {
 
                                 peer.addToList(showitem.getUnHashedBidListId(), new BidInfo(Double.parseDouble(bidvalue), this.username), BID);
-                                this.user.addMyPurchases(new BidInfo(showitem.getTitle(), Double.parseDouble(bidvalue), showitem.getUnHashedKey()));
+                                this.user.addBid(new BidInfo(showitem.getTitle(), Double.parseDouble(bidvalue), showitem.getUnHashedKey()));
 
                                 peer.store(this.username, this.user, USER);
                                 shell.out().println("Bid successfully placed");

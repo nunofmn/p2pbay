@@ -5,7 +5,6 @@ import core.model.NetworkContent;
 import core.model.UserProfile;
 import core.network.PeerConnection;
 import net.tomp2p.peers.Number160;
-import net.tomp2p.storage.Data;
 import org.jboss.aesh.cl.Arguments;
 import org.jboss.aesh.cl.CommandDefinition;
 import org.jboss.aesh.console.command.Command;
@@ -65,7 +64,7 @@ public class SellItem implements Command {
 
         // arguments: title, description, minimumbid, username
         Item item = new Item(title, description, minimumbid, username, itemId.toString(), itemBidsId.toString());
-        user.addMyBid(itemId.toString());
+        user.addItem(itemId.toString());
         peer.store(itemId.toString() , item, ITEM );
         peer.store(username , user, USER);
 

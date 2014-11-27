@@ -101,9 +101,9 @@ public class PeerConnection {
         return null;
     }
 
-    public List<BidInfo> getBids(String bidId, String domain) throws ClassNotFoundException, IOException {
+    public List<BidInfo> getBids(String bidListId, String domain) throws ClassNotFoundException, IOException {
         System.out.println("1");
-        FutureDHT futureDHT = peer.get(Number160.createHash(bidId)).setDomainKey(Number160.createHash(domain)).setAll().start().awaitUninterruptibly();
+        FutureDHT futureDHT = peer.get(Number160.createHash(bidListId)).setDomainKey(Number160.createHash(domain)).setAll().start().awaitUninterruptibly();
         if(futureDHT.isSuccess()) {
             List<BidInfo> result = new ArrayList<BidInfo>();
             Iterator<Data> iterator = futureDHT.getDataMap().values().iterator();

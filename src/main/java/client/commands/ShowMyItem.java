@@ -21,8 +21,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-@CommandDefinition(name="show-my-items", description ="fhjgh gjng")
+@CommandDefinition(name="show-my-items", description ="Show my items information")
 public class ShowMyItem implements Command{
+
+    private static final String USER = "user";
+    private static final String ITEM = "item";
+    private static final String BID = "bid";
+    private static final String SEARCH = "search";
 
     @Arguments
     private List<Resource> arguments;
@@ -45,17 +50,16 @@ public class ShowMyItem implements Command{
     @Override
     public CommandResult execute(CommandInvocation commandInvocation) throws IOException, InterruptedException {
 
-/*
         this.shell = commandInvocation.getShell();
 
         List<Item> items = new ArrayList<Item>();
+        List<String> itemsIDs = user.getMyItems();
         NetworkContent dhtObject;
 
-        List<String> itemsIDs = user.getMyItems();
-        for(String item : itemsIDs){
+        for(String itemId : itemsIDs){
 
             try {
-                dhtObject = peer.get(item);
+                dhtObject = peer.get(itemId, ITEM);
 
                 if(dhtObject != null && dhtObject.contentType().equals("Item"))
                     items.add((Item)dhtObject);
@@ -64,56 +68,77 @@ public class ShowMyItem implements Command{
                 e.printStackTrace();
             }
         }
+
         int i = 1;
         for (Item item : items){
-            shell.out().println("Item " + i +": Title: " + item.getTitle() +
-                    ", Description: " + item.getDescription() +
-                    ", Value: " + item.getValue());
+            shell.out().println("Item " + i +": Title: " + item.getTitle());
             i++;
         }
 
-        shell.out().println("Press 0 to exit.");
-        shell.out().println("Press number of item to show item bid history.");
-        shell.out().println("Press f(number of item) to finalize item.");
+        while(true) {
+            shell.out().println("Press 0 to exit.");
+            shell.out().println("Press number of item to show item bid history.");
+            shell.out().println("Press f(number of item) to finalize item.\n");
 
-        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        //String option = br.readLine();
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            String option = br.readLine();
 
-        String option = "1";
-        shell.out().println(option);
+            if (option.equals("0")) {//sair
+                return CommandResult.SUCCESS;
 
-        if (option.equals("0")) {//sair
-            return CommandResult.SUCCESS;
+            } else if (option.startsWith("f")) {//finalizar um item
 
-        }else if (option.charAt(0) == 'f') {//finalizar um item
+                int index = Integer.parseInt((String) option.subSequence(1, option.length()));
+                Item item = items.get(index-1);
+                String unHashedBidListId = item.getUnHashedBidListId();
+                List<BidInfo> myItemBids = null;
 
-            int index = Integer.parseInt((String)  option.subSequence(1, option.length()));
-            shell.out().println("f(Index):f" + index);
-            Item item = items.get(index);
-            item.finalizeItem();
+                try {
+                    myItemBids = peer.getBids(unHashedBidListId, BID);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
 
-            peer.store(item.getUnHashedKey() , item );
-            peer.store(username , user);
-            shell.out().println(index);
+                if (myItemBids == null) {
+                    shell.out().println("Item " + item.getTitle() + " has 0 bids.\n");
+                    continue;
+                }
 
-            shell.out().println("Item " + item.getTitle() + " Finalizado");
-        }else{ //mostar bid history de um item
+                BidInfo winingBid = myItemBids.get(0);
+                for (BidInfo bid : myItemBids) {
+                    if(bid.getValue() > winingBid.getValue()){
+                        winingBid = bid;
+                    }
+                }
 
-            int index = Integer.parseInt(option);
-            shell.out().println("(Index):f" + index);
-            Item item = items.get(index);
-            List<BidInfo> bids = item.getBidHistoryInfo();
+                item.finalizeItem(winingBid.getHashId());//aqui HashId tem o nome do utilizador
+                peer.store(item.getUnHashedKey() , item, ITEM);
+                shell.out().println("Item " + item.getTitle() + " has been successful finalized.\n");
 
-            for(BidInfo bid : bids){
-                shell.out().println("Bid by: " + bid.getUsername() + ", with value of: " + bid.getValue());
+            } else { //mostar bid history de um item
+
+                int index = Integer.parseInt((String) option);
+                Item item = items.get(index-1);
+                String unHashedBidListId = item.getUnHashedBidListId();
+                List<BidInfo> myItemBids = null;
+
+                try {
+                    myItemBids = peer.getBids(unHashedBidListId, BID);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                if (myItemBids == null) {
+                    shell.out().println("Item " + item.getTitle() + " has 0 bids.\n");
+                    continue;
+                }
+
+                for (BidInfo bid : myItemBids) {
+                    shell.out().println("User " + bid.getHashId() + " placed a bid of " + bid.getValue() );
+                }
             }
-
-
         }
 
-        shell.out().println("Accept bid command");
-
-*/
-        return null;
+        //return null;
     }
 }
