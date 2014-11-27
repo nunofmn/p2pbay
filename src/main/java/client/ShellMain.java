@@ -78,7 +78,7 @@ public class ShellMain {
         AeshConsole aeshConsole = new AeshConsoleBuilder()
                 .commandRegistry(registry)
                 .settings(settings)
-                .prompt(new Prompt(new TerminalString("p2pbay> ",
+                .prompt(new Prompt(new TerminalString(username + "@p2pbay> ",
                         new TerminalColor(Color.GREEN, Color.DEFAULT, Color.Intensity.BRIGHT))))
                 .create();
 

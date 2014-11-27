@@ -11,19 +11,21 @@ public class Item extends NetworkContent {
     private String unHashedKey; //for when we add and save, as there are lots of items it's hark to keep track if not like this.
     private double value;
     private List<BidInfo> bidHistory;
+    private String unHashedBidListId;
     private boolean finalized = false;
     private String winner;
     private String identifier;
     private String owner;
 
-    public Item(String title, String description, double initialValue, String owner, String unHashedKey) {
+    public Item(String title, String description, double initialValue, String owner, String unHashedKey, String unHashedBidListId) {
         super();
         this.title = title;
         this.description = description;
         this.value = initialValue;
         this.owner = owner;
         this.unHashedKey = unHashedKey;
-        this.bidHistory = new ArrayList<BidInfo>();
+        //this.bidHistory = new ArrayList<BidInfo>();
+        this.unHashedBidListId = unHashedBidListId;
 
     }
 
@@ -101,6 +103,10 @@ public class Item extends NetworkContent {
 
     public String getOwner() {
         return owner;
+    }
+
+    public String getUnHashedBidListId(){
+        return unHashedBidListId;
     }
 
     public String getUnHashedKey() {

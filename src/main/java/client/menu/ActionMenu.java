@@ -2,7 +2,6 @@ package client.menu;
 
 import core.model.Item;
 import core.model.NetworkContent;
-import core.model.SearchItem;
 import core.model.UserProfile;
 import core.network.PeerConnection;
 import net.tomp2p.peers.Number160;

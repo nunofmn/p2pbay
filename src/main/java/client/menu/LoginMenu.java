@@ -10,6 +10,9 @@ import java.io.InputStreamReader;
 
 public class LoginMenu {
 
+    private static final String USER = "user";
+    private static final String ITEM = "item";
+    private static final String BID = "bid";
     private String user;
     private NetworkContent userProfile;
 
@@ -34,7 +37,7 @@ public class LoginMenu {
                 System.out.println("Por favor digite o seu username");
                 user = br.readLine();
 
-                userProfile = peercore.get(user);
+                userProfile = peercore.get(user, USER);
                 if (userProfile != null && userProfile.contentType().equals("User")) {
                     System.out.println("digite a sua password");
                     pass = br.readLine();
@@ -54,7 +57,7 @@ public class LoginMenu {
                 while (true) {
                     System.out.println("Digite o seu username pretendido:");
                     user = br.readLine();
-                    userProfile = peercore.get(user);
+                    userProfile = peercore.get(user, USER);
                     if (userProfile != null) {
                         System.out.println("Nome de utilizador ja em uso, escolha um diferente:");
                         continue;
@@ -67,7 +70,7 @@ public class LoginMenu {
                         continue;
                     }
 
-                    peercore.store(user, new UserProfile(pass));
+                    peercore.store(user, new UserProfile(pass), USER);
                     break;
                 }
             } else if (escolha.equals("3")){

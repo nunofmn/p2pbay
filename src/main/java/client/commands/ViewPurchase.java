@@ -17,6 +17,9 @@ import java.util.List;
 
 @CommandDefinition(name="purchase-history", description ="view purchases history")
 public class ViewPurchase implements Command {
+    private static final String USER = "user";
+    private static final String ITEM = "item";
+    private static final String BID = "bid";
     @Arguments
     private List<Resource> arguments;
 
@@ -44,7 +47,7 @@ public class ViewPurchase implements Command {
 
         for(BidInfo bid : user.getMyBidHistory()){
             try {
-                Item item = (Item)peer.get(bid.getHashId());
+                Item item = (Item)peer.get(bid.getHashId(), ITEM);
                 if(item.getWinner().equals(username))
                     shell.out().println("You purchased " + bid.getTitle() + ", so spent " +  bid.getValue() + " Euros." );
             }catch(Exception e){

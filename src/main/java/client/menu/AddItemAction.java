@@ -2,7 +2,6 @@ package client.menu;
 
 import core.model.Item;
 import core.model.NetworkContent;
-import core.model.SearchItem;
 import core.model.UserProfile;
 import core.network.PeerConnection;
 import net.tomp2p.peers.Number160;
@@ -26,7 +25,7 @@ public class AddItemAction {
     }
 
     public void execute() throws Exception{
-        Number160 itemId;
+      /*  Number160 itemId;
         NetworkContent objectInDHT;
         Random r = new Random();
         itemId = new Number160(r);
@@ -42,6 +41,6 @@ public class AddItemAction {
             }
             ((SearchItem)objectInDHT).addReferenceItem(itemId.toString());
             peercore.store(s , objectInDHT );
-        }
+        }*/
     }
 }

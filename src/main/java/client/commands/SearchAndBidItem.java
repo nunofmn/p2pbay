@@ -27,6 +27,10 @@ public class SearchAndBidItem implements Command {
     private static final String AND = "and";
     private static final String OR = "or";
     private static final String NOT = "not";
+    private static final String USER = "user";
+    private static final String ITEM = "item";
+    private static final String BID = "bid";
+    private static final String SEARCH = "search";
 
     @Arguments
     private List<Resource> arguments;
@@ -93,10 +97,8 @@ public class SearchAndBidItem implements Command {
                 for(int i= arguments.size() - 1; i >= 0; i--){
                     symbol = arguments.get(i).toString().toLowerCase();
                     if(isOperand(symbol)){
-                        objectInDHT = peer.get(symbol);
-                        if (objectInDHT != null && objectInDHT.contentType().equals("Search")) {
-                            operandGetResult = ((core.model.SearchItem) objectInDHT).getAllItemsReferenced();
-                        } else {
+                        operandGetResult = peer.getIndexSearch(symbol, SEARCH);
+                        if (operandGetResult == null ) {
                             operandGetResult = new ArrayList<String>();
                         }
                         stack.add(operandGetResult);
@@ -117,7 +119,7 @@ public class SearchAndBidItem implements Command {
                 if(result != null && !result.isEmpty()) {
 
                     for(String itemkey : result) {
-                        NetworkContent getitem = peer.get(itemkey);
+                        NetworkContent getitem = peer.get(itemkey, ITEM);
                         if(getitem != null && getitem.contentType().equals("Item")) {
                             items.add((Item)getitem);
                         }
@@ -151,18 +153,21 @@ public class SearchAndBidItem implements Command {
 
                     //show item TODO - Refactor to another class
                     Item showitem = items.get(Integer.parseInt(option)-1);
-                    itemRealTime = (Item)peer.get(showitem.getUnHashedKey()); //we retrieve the item again so it is current
-                    shell.out().println("Title: " + itemRealTime.getTitle());
-                    shell.out().println("Description: " + itemRealTime.getDescription());
+                    shell.out().println("Title: " + showitem.getTitle());
+                    shell.out().println("Description: " + showitem.getDescription());
                     shell.out().println("Bid History:");
 
                     //show item bids TODO - Refactor to another class
-                    if (!itemRealTime.getBidHistoryInfo().isEmpty()) {
-                        for (BidInfo bid : itemRealTime.getBidHistoryInfo()) {
+                    List<BidInfo> bids = peer.getBids(showitem.getUnHashedBidListId(), BID);
+                    Double currentPrice = showitem.getValue();
+                    if (bids != null && !bids.isEmpty()) {
+                        for (BidInfo bid : bids) {
+                            if(currentPrice < bid.getValue())
+                                currentPrice = bid.getValue();
                             shell.out().println("User: " + bid.getHashId() + " bidded " + bid.getValue() + " Euros.");
                         }
                     } else {
-                        System.out.println("No bids were made. Minimum bid is " + itemRealTime.getValue() + " Euros.");
+                        System.out.println("No bids were made. Minimum bid is " + showitem.getValue() + " Euros.");
                     }
 
                     //bid on item
@@ -170,17 +175,14 @@ public class SearchAndBidItem implements Command {
                     String bidoption = br.readLine();
 
                     if(bidoption.toString().equals("y")){
-                        shell.out().println("Bid value (minimum: " + showitem.getHighBidValue() + "):");
+                        shell.out().println("Bid value (minimum: " + currentPrice + "):");
                         String bidvalue = br.readLine();
 
-                        itemRealTime = (Item)peer.get(showitem.getUnHashedKey());
 
-                        //save bid
-                        BidInfo bid = new BidInfo(this.username, itemRealTime.getTitle(), Double.parseDouble(bidvalue), showitem.getUnHashedKey());
-                        itemRealTime.addBid(bid);
-                        this.user.addMyPurchases(bid);
-                        peer.store(itemRealTime.getUnHashedKey(), itemRealTime);
-                        peer.store(this.username, this.user);
+                        peer.addToList(showitem.getUnHashedBidListId(), new BidInfo(Double.parseDouble(bidvalue),this.username), BID);
+                        this.user.addMyPurchases(new BidInfo(showitem.getTitle(), Double.parseDouble(bidvalue), showitem.getUnHashedKey()));
+
+                        peer.store(this.username, this.user, USER);
                         shell.out().println("Bid successfully placed");
 
                     }else if(bidoption.toString().equals("n")) {

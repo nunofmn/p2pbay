@@ -27,7 +27,7 @@ public class GetItemsAction {
 
 
     public void execute() throws Exception{
-        NetworkContent tmp;
+       /* NetworkContent tmp;
         if (this.hashList != null && !this.hashList.isEmpty()) {
             this.result = new ArrayList<Item>();
             for (String s : this.hashList) {
@@ -35,7 +35,7 @@ public class GetItemsAction {
                 if (tmp != null && tmp.contentType().equals("Item"))
                     this.result.add((Item)tmp);
             }
-        }
+        }*/
     }
 
     public List<Item> getResult(){

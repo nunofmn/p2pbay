@@ -1,7 +1,6 @@
 package client.menu;
 
 import core.model.NetworkContent;
-import core.model.SearchItem;
 import core.network.PeerConnection;
 
 import java.io.BufferedReader;
@@ -29,7 +28,7 @@ public class SearchAction {
 
     public void execute() throws Exception {
 
-        NetworkContent objectInDHT;
+       /* NetworkContent objectInDHT;
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Type the item name you want to see: (ex: AND ipod 32gb)");
         String title = br.readLine();
@@ -81,6 +80,7 @@ public class SearchAction {
         }else{
             System.out.println("Too many words... please write only two words and an boolean operation");
         }
+        */
     }
 
     public List<String> getResults(){
