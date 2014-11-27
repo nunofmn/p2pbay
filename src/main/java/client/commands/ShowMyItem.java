@@ -69,14 +69,19 @@ public class ShowMyItem implements Command{
             }
         }
 
+        shell.out().println();
         int i = 1;
         for (Item item : items){
-            shell.out().println("Item " + i +": Title: " + item.getTitle());
+            shell.out().print("Item " + i +": Title: " + item.getTitle());
+            if(item.isFinalized())
+                shell.out().println(" (Finalized)");
+            else
+                shell.out().println();
             i++;
         }
 
         while(true) {
-            shell.out().println("Press 0 to exit.");
+            shell.out().println("\nPress 0 to exit.");
             shell.out().println("Press number of item to show item bid history.");
             shell.out().println("Press f(number of item) to finalize item.\n");
 
@@ -100,7 +105,7 @@ public class ShowMyItem implements Command{
                 }
 
                 if (myItemBids == null) {
-                    shell.out().println("Item " + item.getTitle() + " has 0 bids.\n");
+                    shell.out().println("Item " + item.getTitle() + " has 0 bids, can not be finalized");
                     continue;
                 }
 
