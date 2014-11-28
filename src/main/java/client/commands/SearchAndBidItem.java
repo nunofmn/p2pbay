@@ -83,7 +83,9 @@ public class SearchAndBidItem implements Command {
     public CommandResult execute(CommandInvocation commandInvocation) throws IOException, InterruptedException {
 
         this.shell = commandInvocation.getShell();
+        String bidvalue, option, bidoption;
 
+        PromptForInputHelper helper = new PromptForInputHelper();
         NetworkContent objectInDHT;
 
         try {
@@ -137,9 +139,12 @@ public class SearchAndBidItem implements Command {
                         count++;
                     }
 
-                    shell.out().println("Choose item to show: ");
+
+                    option = helper.promptForInput("Choose item to show: ", null, commandInvocation);
+
+                    /*shell.out().println("Choose item to show: ");
                     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                    String option = br.readLine();
+                    String option = br.readLine();*/
 
 
                     try {
@@ -171,14 +176,12 @@ public class SearchAndBidItem implements Command {
                     }
 
                     //bid on item
-                    shell.out().println("Bid on item? (y/n)");
-                    String bidoption = br.readLine();
+                    bidoption = helper.promptForInput("Bid on item? (y/n): ", null, commandInvocation);
+
 
                     if(bidoption.toString().equals("y")){
-                        shell.out().println("Bid value (minimum: " + currentPrice + "):");
-
                         while(true) {
-                            String bidvalue = br.readLine();
+                            bidvalue = helper.promptForInput("Bid value (minimum: " + currentPrice + "): ", null, commandInvocation);
 
                             if (Double.parseDouble(bidvalue) > currentPrice) {
 
@@ -208,7 +211,7 @@ public class SearchAndBidItem implements Command {
 
 
         }catch(ClassNotFoundException e) {
-            System.out.println("Didnt find word in DHT.");
+            System.out.println("Didn't find word in DHT.");
         }
 
         return CommandResult.SUCCESS;

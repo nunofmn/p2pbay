@@ -10,12 +10,14 @@ import java.io.IOException;
 /**
  * Created by EngSoftware on 26-11-2014.
  */
-@CommandDefinition(name="exit", description = "exit the program")
+@CommandDefinition(name="quit", description = "quit the program")
 public class ExitCommand implements Command {
 
     @Override
-    public CommandResult execute(CommandInvocation commandInvocation) throws IOException, InterruptedException {
+    public CommandResult execute(CommandInvocation commandInvocation) throws IOException {
+        commandInvocation.getShell().out().println("Thank you for choosing p2pBay, see you soon!");
         commandInvocation.stop();
+        System.exit(0);
         return CommandResult.SUCCESS;
     }
 }

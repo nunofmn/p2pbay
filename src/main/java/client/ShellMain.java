@@ -42,7 +42,6 @@ public class ShellMain {
         username = login.getUsername();
 
         GossipConnect gossip = new GossipConnect(peer.getPeer());
-
         SettingsBuilder builder = new SettingsBuilder().logging(true);
         builder.enableMan(false)
                 .readInputrc(false);
@@ -83,6 +82,7 @@ public class ShellMain {
                 .create();
 
         aeshConsole.start();
+
     }
 
 }

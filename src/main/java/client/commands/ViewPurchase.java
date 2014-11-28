@@ -51,7 +51,7 @@ public class ViewPurchase implements Command {
                 try {
                     Item item = (Item) peer.get(bid.getHashId(), ITEM);
                     if (item.getWinner().equals(username))
-                        shell.out().println("You purchased " + bid.getTitle() + ", so spent " + bid.getValue() + " Euros.");
+                        shell.out().println("You purchased " + bid.getTitle() + ", you spent " + bid.getValue() + " Euros.");
                 } catch (Exception e) {
                 }
             }

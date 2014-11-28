@@ -52,9 +52,15 @@ public class ShowMyItem implements Command{
 
         this.shell = commandInvocation.getShell();
 
+        PromptForInputHelper helper = new PromptForInputHelper();
         List<Item> items = new ArrayList<Item>();
         List<String> itemsIDs = user.getMyItems();
         NetworkContent dhtObject;
+
+        if(itemsIDs.isEmpty()){
+            shell.out().println("You have no items for sale...");
+            return CommandResult.SUCCESS;
+        }
 
         for(String itemId : itemsIDs){
 
@@ -70,6 +76,7 @@ public class ShowMyItem implements Command{
         }
 
         shell.out().println();
+        shell.out().println("#########Your Items############");
         int i = 1;
         for (Item item : items){
             shell.out().print("Item " + i +": Title: " + item.getTitle());
@@ -79,14 +86,16 @@ public class ShowMyItem implements Command{
                 shell.out().println();
             i++;
         }
+        shell.out().println("###############################");
 
         while(true) {
             shell.out().println("\nPress 0 to exit.");
             shell.out().println("Press number of item to show item bid history.");
             shell.out().println("Press f(number of item) to finalize item.\n");
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            String option = br.readLine();
+            String option = helper.promptForInput(": ", null, commandInvocation);
+            //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            //String option = br.readLine();
 
             if (option.equals("0")) {//sair
                 return CommandResult.SUCCESS;
