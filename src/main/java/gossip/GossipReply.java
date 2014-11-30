@@ -15,11 +15,10 @@ public class GossipReply implements ObjectDataReply{
     public Object reply(PeerAddress sender, Object request) throws Exception {
         //logger.log(GOSSIP, "Received message from: " + sender.getID().longValue());
         GossipMessage message = (GossipMessage)request;
-        //System.out.println("Gossip -> sum: " + message.getSum() + "; weight: " + message.getWeight() + "; id: " + message.getId());
+        System.out.println("Gossip -> sum: " + message.getSum() + "; weight: " + message.getWeight() + "; id: " + message.getId());
 
         gossip.setSum((gossip.getSum() + message.getSum())/2);
         gossip.setWeight((gossip.getWeight() + message.getWeight())/2);
-        gossip.sendMessage(new GossipMessage(gossip.getSum(), gossip.getWeight(), gossip.getId()));
 
         return "OK";
     }

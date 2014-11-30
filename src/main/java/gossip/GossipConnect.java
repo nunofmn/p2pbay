@@ -35,7 +35,7 @@ public class GossipConnect {
         peer.setObjectDataReply(new GossipReply(this));
     }
 
-    public void sendMessage(GossipMessage message) {
+    public void sendMessage(final GossipMessage message) {
 
         if(this.num < 20) {
 
@@ -47,6 +47,7 @@ public class GossipConnect {
             response.addListener(new BaseFutureListener<BaseFuture>() {
                 @Override
                 public void operationComplete(BaseFuture future) throws Exception {
+                    System.out.println("[GOSSIP][Sent] Sum: " + message.getSum() + "; Weight: " + message.getWeight());
                     //logger.log(GOSSIP, "Message sent to " + destinationpeer.getID().longValue());
                     // System.out.println("Message sent to " + destinationpeer.getID());
                 }

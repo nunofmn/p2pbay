@@ -5,6 +5,7 @@ import client.menu.LoginMenu;
 import core.model.UserProfile;
 import core.network.PeerConnection;
 import gossip.GossipConnect;
+import gossip.GossipMessage;
 import org.apache.logging.log4j.LogManager;
 import org.jboss.aesh.console.AeshConsole;
 import org.jboss.aesh.console.AeshConsoleBuilder;
@@ -18,6 +19,10 @@ import org.jboss.aesh.terminal.Color;
 import org.jboss.aesh.terminal.TerminalColor;
 import org.jboss.aesh.terminal.TerminalString;
 import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ShellMain {
 
@@ -41,7 +46,19 @@ public class ShellMain {
         user = login.getUserProfile();
         username = login.getUsername();
 
-        GossipConnect gossip = new GossipConnect(peer.getPeer());
+        final GossipConnect gossip = new GossipConnect(peer.getPeer());
+
+        // gossip protocol thread executor
+        ScheduledExecutorService gossipexecutor = Executors.newSingleThreadScheduledExecutor();
+
+        Runnable periodicTask = new Runnable() {
+            public void run() {
+                gossip.sendMessage(new GossipMessage(gossip.getSum()/2, gossip.getWeight()/2, gossip.getId()));
+            }
+        };
+
+        gossipexecutor.scheduleAtFixedRate(periodicTask, 0, 10, TimeUnit.SECONDS);
+
         SettingsBuilder builder = new SettingsBuilder().logging(true);
         builder.enableMan(false)
                 .readInputrc(false);
