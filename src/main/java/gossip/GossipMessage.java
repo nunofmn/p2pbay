@@ -4,13 +4,25 @@ import java.io.Serializable;
 
 public class GossipMessage implements Serializable {
 
-    private Double sum;
-    private Double weight;
+    private Double sumNodes;
+    private Double weightNodes;
+    private Double sumUsers;
+    private Double weightUsers;
+    private Double sumItems;
+    private Double weightItems;
     private int id;
 
-    public GossipMessage(Double sum, Double weight, int id) {
-        this.sum = sum;
-        this.weight = weight;
+    public GossipMessage(Double sumNodes, Double weightNodes,
+                         Double sumUsers, Double weightUsers,
+                         Double sumItems, Double weightItems, int id) {
+        this.sumNodes = sumNodes;
+        this.weightNodes = weightNodes;
+
+        this.setSumUsers(sumUsers);
+        this.setWeightUsers(weightUsers);
+
+        this.setSumItems(sumItems);
+        this.setWeightItems(weightItems);
         this.id = id;
     }
 
@@ -18,23 +30,55 @@ public class GossipMessage implements Serializable {
         this.id = id;
     }
 
-    public Double getSum() {
-        return sum;
+    public Double getSumNodes() {
+        return sumNodes;
     }
 
-    public Double getWeight() {
-        return weight;
+    public Double getWeightNodes() {
+        return weightNodes;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setSum(Double sum) {
-        this.sum = sum;
+    public void setSumNodes(Double sumNodes) {
+        this.sumNodes = sumNodes;
     }
 
-    public void setWeight(Double weight) {
-        this.weight = weight;
+    public void setWeightNodes(Double weightNodes) {
+        this.weightNodes = weightNodes;
+    }
+
+    public Double getSumUsers() {
+        return sumUsers;
+    }
+
+    public void setSumUsers(Double sumUsers) {
+        this.sumUsers = sumUsers;
+    }
+
+    public Double getWeightUsers() {
+        return weightUsers;
+    }
+
+    public void setWeightUsers(Double weightUsers) {
+        this.weightUsers = weightUsers;
+    }
+
+    public Double getSumItems() {
+        return sumItems;
+    }
+
+    public void setSumItems(Double sumItems) {
+        this.sumItems = sumItems;
+    }
+
+    public Double getWeightItems() {
+        return weightItems;
+    }
+
+    public void setWeightItems(Double weightItems) {
+        this.weightItems = weightItems;
     }
 }

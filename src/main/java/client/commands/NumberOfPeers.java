@@ -3,7 +3,6 @@ package client.commands;
 import core.model.UserProfile;
 import core.network.PeerConnection;
 import gossip.GossipConnect;
-import gossip.GossipMessage;
 import org.jboss.aesh.cl.Arguments;
 import org.jboss.aesh.cl.CommandDefinition;
 import org.jboss.aesh.console.command.Command;
@@ -43,8 +42,24 @@ public class NumberOfPeers implements Command {
 
         this.shell = commandInvocation.getShell();
 
-        shell.out().println("Number of peers: " + Math.round(gossip.getSum()/gossip.getWeight()));
-        shell.out().println("Number of peers Sampaio: " + Math.ceil(gossip.getSum()/gossip.getWeight()));
+        double numPeers = gossip.getSumNodes()/gossip.getWeightNodes();
+
+        if(numPeers > 6)
+            numPeers = 6.0;
+        double numUsers = (gossip.getSumUsers() / gossip.getWeightUsers())/ numPeers;
+        double numItems = (gossip.getSumItems() / gossip.getWeightItems())/ numPeers;
+
+
+        shell.out().println("Number of peers: " + Math.round(gossip.getSumNodes()/gossip.getWeightNodes()));
+        shell.out().println("Number of peers Sampaio: " + Math.ceil(gossip.getSumNodes() / gossip.getWeightNodes()));
+
+        shell.out().println("Number of users: " + Math.round(numUsers));
+        shell.out().println("Number of Users Sampaio: " + Math.ceil(numUsers));
+
+        shell.out().println("Number of items: " + Math.round(numItems));
+        shell.out().println("Number of items Sampaio: " + Math.ceil(numItems));
+
+
         return null;
     }
 }

@@ -48,18 +48,20 @@ public class ShellMain {
         boolean isAdmin = username.equals("Admin");
 
         System.out.println("------------------------------------------");
-        final GossipConnect gossip = new GossipConnect(peer.getPeer(), username, isAdmin);
+        final GossipConnect gossip = new GossipConnect(peer, username, isAdmin);
 
         // gossip protocol thread executor
         ScheduledExecutorService gossipexecutor = Executors.newSingleThreadScheduledExecutor();
 
         Runnable periodicTask = new Runnable() {
             public void run() {
-                gossip.sendMessage(new GossipMessage(gossip.getSum()/2, gossip.getWeight()/2, gossip.getId()));
+                gossip.sendMessage(new GossipMessage(gossip.getSumNodes()/2, gossip.getWeightNodes()/2,
+                        gossip.getSumUsers()/2, gossip.getWeightUsers()/2,
+                        gossip.getSumItems()/2 , gossip.getWeightItems()/2, gossip.getId()));
             }
         };
 
-        gossipexecutor.scheduleAtFixedRate(periodicTask, 0, 10, TimeUnit.SECONDS);
+        gossipexecutor.scheduleAtFixedRate(periodicTask, 0, 2, TimeUnit.SECONDS);
 
         SettingsBuilder builder = new SettingsBuilder().logging(true);
         builder.enableMan(false)
