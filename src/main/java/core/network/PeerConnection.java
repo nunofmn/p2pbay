@@ -27,13 +27,12 @@ public class PeerConnection {
             throws Exception {
 
         Random r = new Random();
-        peer = new PeerMaker(new Number160(r)).setPorts(Integer.parseInt(myPort)).makeAndListen();
+        peer = new PeerMaker(new Number160(r)).setPorts(Integer.parseInt(myPort)).setEnableIndirectReplication(true).makeAndListen();
         FutureBootstrap fb = peer.bootstrap().setBroadcast().setPorts(Integer.parseInt(myPort)).start();
         fb.awaitUninterruptibly();
         if (fb.getBootstrapTo() != null) {
             peer.discover().setPeerAddress(fb.getBootstrapTo().iterator().next()).start().awaitUninterruptibly();
         }
-
     }
 
 
@@ -65,6 +64,7 @@ public class PeerConnection {
 
     public NetworkContent get(String name, String domain)
         throws ClassNotFoundException, IOException {
+        //FutureDHT futureDHT = peer.get(Number160.createHash(name)).start();
 
         FutureDHT futureDHT = peer.get(Number160.createHash(name)).setDomainKey(Number160.createHash(domain)).start();
         futureDHT.awaitUninterruptibly();
@@ -77,6 +77,8 @@ public class PeerConnection {
 
     public void store(String name, NetworkContent object, String domain)
         throws IOException {
+        //peer.put(Number160.createHash(name)).setData(new Data(object)).start().awaitUninterruptibly();
+
         peer.put(Number160.createHash(name)).setData(new Data(object)).setDomainKey(Number160.createHash(domain)).start().awaitUninterruptibly();
     }
 

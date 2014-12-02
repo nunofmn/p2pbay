@@ -49,7 +49,7 @@ public class SellItem implements Command {
         this.shell = commandInvocation.getShell();
 
         shell.out().println("Sell Item command");
-
+//peer.getPeer().shutdown();
         Number160 itemId, itemBidsId;
         NetworkContent objectInDHT;
         Random r = new Random();

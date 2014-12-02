@@ -21,26 +21,53 @@ public class GossipConnect {
     private Double weight;
     private int id;
     private int num;
+    private String username;
 
     //static final Logger logger = LogManager.getLogger(GossipConnect.class);
     //final Level GOSSIP = Level.forName("GOSSIP", 200);
 
-    public GossipConnect(Peer peer) {
+    public GossipConnect(Peer peer, String username, boolean isAdmin) {
         this.peer = peer;
         this.sum = 1.0;
         this.weight = 0.0;
+        if(isAdmin)
+            this.weight = 1.0;
         this.id = 0;
         this.num = 0;
+        this.username = username;
 
         peer.setObjectDataReply(new GossipReply(this));
     }
 
     public void sendMessage(final GossipMessage message) {
 
-        if(this.num < 20) {
+
+
+
 
             List<PeerAddress> peers = peer.getPeerBean().getPeerMap().getAll();
+        if(peers.isEmpty()){
+            System.out.println("Gossip nao tem vizinhos");
+            return;
+        }
+        num++;
+
             final PeerAddress destinationpeer = peers.get(new Random().nextInt(((peers.size() - 1)) + 1));
+        if(this.num > 10 && username.equals("Admin")) {
+            message.setId(getId()+1);
+            setId(getId()+1);
+            this.num = 0;
+            //this.setSum(0.5);
+            //this.setWeight(0.5);
+            message.setWeight(0.5);
+            message.setSum(0.5);
+
+        }else{
+            message.setId(getId());
+        }
+        this.setSum(message.getSum());
+        this.setWeight(message.getWeight());
+
 
             FutureResponse response = peer.sendDirect(destinationpeer).setObject(message).start();
 
@@ -57,8 +84,8 @@ public class GossipConnect {
                 }
             });
 
-            num++;
-        }
+            //num++;
+
 
     }
 

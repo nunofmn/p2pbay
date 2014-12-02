@@ -14,6 +14,10 @@ public class GossipMessage implements Serializable {
         this.id = id;
     }
 
+    public void setId(int id){
+        this.id = id;
+    }
+
     public Double getSum() {
         return sum;
     }
@@ -24,5 +28,13 @@ public class GossipMessage implements Serializable {
 
     public int getId() {
         return id;
+    }
+
+    public void setSum(Double sum) {
+        this.sum = sum;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
     }
 }

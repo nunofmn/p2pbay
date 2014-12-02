@@ -44,7 +44,7 @@ public class NumberOfPeers implements Command {
         this.shell = commandInvocation.getShell();
 
         shell.out().println("Number of peers: " + Math.round(gossip.getSum()/gossip.getWeight()));
-
+        shell.out().println("Number of peers Sampaio: " + Math.ceil(gossip.getSum()/gossip.getWeight()));
         return null;
     }
 }

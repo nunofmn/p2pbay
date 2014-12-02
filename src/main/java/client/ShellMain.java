@@ -45,8 +45,10 @@ public class ShellMain {
         login.display(peer);
         user = login.getUserProfile();
         username = login.getUsername();
+        boolean isAdmin = username.equals("Admin");
 
-        final GossipConnect gossip = new GossipConnect(peer.getPeer());
+        System.out.println("------------------------------------------");
+        final GossipConnect gossip = new GossipConnect(peer.getPeer(), username, isAdmin);
 
         // gossip protocol thread executor
         ScheduledExecutorService gossipexecutor = Executors.newSingleThreadScheduledExecutor();
@@ -75,7 +77,8 @@ public class ShellMain {
         Command viewPurchase = new ViewPurchase(peer,user,username);
         Command biddingHistory = new BiddingHistory(peer,user,username);
         Command showMyItem = new ShowMyItem(peer,user,username);
-        Command exit = new ExitCommand();
+        Command exit = new ExitCommand(peer);
+        Command showObj = new ShowStoredObj(peer,user,username,gossip);
 
 
         CommandRegistry registry = new AeshCommandRegistryBuilder()
@@ -88,7 +91,8 @@ public class ShellMain {
                 .command(viewPurchase)
                 .command(biddingHistory)
                 .command(showMyItem)
-                .command(ExitCommand.class)
+                .command(exit)
+                .command(showObj)
                 .create();
 
         AeshConsole aeshConsole = new AeshConsoleBuilder()
