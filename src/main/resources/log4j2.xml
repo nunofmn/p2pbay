@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %msg%n"/>
+        </Console>
+
+        <File name="MyFile" fileName="./app.log">
+            <PatternLayout pattern="%d{yyyy-mm-dd HH:mm:ss.SSS} %msg%n"/>
+        </File>
+    </appenders>
+
+    <loggers>
+        <root level="all">
+            <appender-ref ref="MyFile" level="info"/>
+            <appender-ref ref="MyFile" level="error"/>
+        </root>
+    </loggers>
+</configuration>

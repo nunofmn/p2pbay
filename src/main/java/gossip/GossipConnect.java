@@ -7,6 +7,10 @@ import net.tomp2p.futures.BaseFutureListener;
 import net.tomp2p.futures.FutureResponse;
 import net.tomp2p.p2p.Peer;
 import net.tomp2p.peers.PeerAddress;
+import net.tomp2p.rpc.ObjectDataReply;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Random;
@@ -25,6 +29,7 @@ public class GossipConnect {
     private int num;
     private String username;
 
+    static final Logger logger = LogManager.getLogger(GossipConnect.class);
     private double originalNumUsers;
     private double originalNumItems;
 
@@ -106,12 +111,13 @@ public class GossipConnect {
             response.addListener(new BaseFutureListener<BaseFuture>() {
                 @Override
                 public void operationComplete(BaseFuture future) throws Exception {
-                    System.out.println("[GOSSIP][Sent] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes());
-                    System.out.println("[GOSSIP][Sent Users] Sum: " + message.getSumUsers() + "; Weight: " + message.getWeightUsers());
-                    System.out.println("[GOSSIP][Sent Items] Sum: " + message.getSumItems() + "; Weight: " + message.getWeightItems());
+                    //System.out.println("[GOSSIP][Sent] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes());
+                    //System.out.println("[GOSSIP][Sent Users] Sum: " + message.getSumUsers() + "; Weight: " + message.getWeightUsers());
+                    //System.out.println("[GOSSIP][Sent Items] Sum: " + message.getSumItems() + "; Weight: " + message.getWeightItems());
 
-                    //logger.log(GOSSIP, "Message sent to " + destinationpeer.getID().longValue());
-                    // System.out.println("Message sent to " + destinationpeer.getID());
+                    logger.error("[GOSSIP][NODES][Sent] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes() + "; ID: " + message.getId());
+                    logger.error("[GOSSIP][USERS][Sent] Sum: " + message.getSumUsers() + "; Weight: " + message.getWeightUsers() + "; ID: " + message.getId());
+                    logger.error("[GOSSIP][ITEMS][Sent] Sum: " + message.getSumItems() + "; Weight: " + message.getWeightItems() + "; ID: " + message.getId());
                 }
 
                 @Override

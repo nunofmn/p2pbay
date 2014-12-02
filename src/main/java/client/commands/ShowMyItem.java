@@ -1,6 +1,5 @@
 package client.commands;
 
-import com.sun.corba.se.impl.transport.ByteBufferPoolImpl;
 import core.model.BidInfo;
 import core.model.Item;
 import core.model.NetworkContent;
