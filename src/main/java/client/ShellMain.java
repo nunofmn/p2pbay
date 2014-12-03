@@ -40,15 +40,11 @@ public class ShellMain {
             peer = new PeerConnection(args[0]);
         }
 
-        //Login
-        LoginMenu login = new LoginMenu();
-        login.display(peer);
-        user = login.getUserProfile();
-        username = login.getUsername();
-        boolean isAdmin = username.equals("Admin");
+        //boolean isAdmin = false;
+        username = "";
 
-        System.out.println("------------------------------------------");
-        final GossipConnect gossip = new GossipConnect(peer, username, isAdmin);
+
+        final GossipConnect gossip = new GossipConnect(peer, username, false);
 
         // gossip protocol thread executor
         ScheduledExecutorService gossipexecutor = Executors.newSingleThreadScheduledExecutor();
@@ -61,7 +57,20 @@ public class ShellMain {
             }
         };
 
-        gossipexecutor.scheduleAtFixedRate(periodicTask, 0, 2, TimeUnit.SECONDS);
+        gossipexecutor.scheduleAtFixedRate(periodicTask, 0, 5, TimeUnit.SECONDS);
+
+        //Login
+        LoginMenu login = new LoginMenu();
+        login.display(peer);
+        user = login.getUserProfile();
+        username = login.getUsername();
+        gossip.setUsername(username);
+        if(username.equals("Admin")){
+            gossip.startGossipAdmin();
+        }
+
+        System.out.println("------------------------------------------");
+
 
         SettingsBuilder builder = new SettingsBuilder().logging(true);
         builder.enableMan(false)

@@ -6,6 +6,8 @@ import net.tomp2p.futures.BaseFuture;
 import net.tomp2p.futures.BaseFutureListener;
 import net.tomp2p.futures.FutureResponse;
 import net.tomp2p.p2p.Peer;
+import net.tomp2p.p2p.PeerMaker;
+import net.tomp2p.peers.Number160;
 import net.tomp2p.peers.PeerAddress;
 import net.tomp2p.rpc.ObjectDataReply;
 import org.apache.logging.log4j.Level;
@@ -50,7 +52,10 @@ public class GossipConnect {
 
     public void sendMessage(final GossipMessage message) {
 
-            List<PeerAddress> peers = peer.getPeerBean().getPeerMap().getAll();
+
+        //System.out.println("default bag size - " + new PeerMaker(new Number160(4)).getBagSize());
+        List<PeerAddress> peers = peer.getPeerBean().getPeerMap().getAll();
+        //System.out.println("meus peers - " + peers.size());
         if(peers.isEmpty()){
             System.out.println("Gossip nao tem vizinhos");
             return;
@@ -60,18 +65,18 @@ public class GossipConnect {
 
         List<Double> numUsersItems = peerCon.getNumUsersItems();
         if(this.originalNumUsers != numUsersItems.get(0) || this.originalNumItems != numUsersItems.get(1)){
-         //novos users ou items foram adicionados entretanto, adicionar ao sum
-            System.out.println("***********---**********");
-            message.setSumUsers(message.getSumUsers()+numUsersItems.get(0)/2);
-            message.setSumItems(message.getSumItems()+numUsersItems.get(1)/2);
+            //novos users ou items foram adicionados entretanto, adicionar diferença ao sum
+            //System.out.println("***********---**********");
+            message.setSumUsers(message.getSumUsers() + (numUsersItems.get(0) - this.originalNumUsers )/2);
+            message.setSumItems(message.getSumItems() + (numUsersItems.get(1) + this.originalNumItems)/2);
             originalNumUsers = numUsersItems.get(0);
             originalNumItems = numUsersItems.get(1);
         }
 
 
 
-            final PeerAddress destinationpeer = peers.get(new Random().nextInt(((peers.size() - 1)) + 1));
-        if(this.num > 25 && username.equals("Admin")) {
+        final PeerAddress destinationpeer = peers.get(new Random().nextInt(((peers.size() - 1)) + 1));
+        if(this.num > 50 && username.equals("Admin")) {
             message.setId(getId()+1);
             setId(getId()+1);
             this.num = 0;
@@ -108,24 +113,32 @@ public class GossipConnect {
 
         FutureResponse response = peer.sendDirect(destinationpeer).setObject(message).start();
 
-            response.addListener(new BaseFutureListener<BaseFuture>() {
-                @Override
-                public void operationComplete(BaseFuture future) throws Exception {
-                    //System.out.println("[GOSSIP][Sent] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes());
-                    //System.out.println("[GOSSIP][Sent Users] Sum: " + message.getSumUsers() + "; Weight: " + message.getWeightUsers());
-                    //System.out.println("[GOSSIP][Sent Items] Sum: " + message.getSumItems() + "; Weight: " + message.getWeightItems());
+        response.addListener(new BaseFutureListener<BaseFuture>() {
+            @Override
+            public void operationComplete(BaseFuture future) throws Exception {
+                System.out.println("[GOSSIP][Sent] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes());
+                //System.out.println("[GOSSIP][Sent Users] Sum: " + message.getSumUsers() + "; Weight: " + message.getWeightUsers());
+                //System.out.println("[GOSSIP][Sent Items] Sum: " + message.getSumItems() + "; Weight: " + message.getWeightItems());
 
-                    logger.error("[GOSSIP][NODES][Sent] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes() + "; ID: " + message.getId());
+                //if(username.equals("joao")) {
+                double numPeers = Math.round(message.getSumNodes() / message.getWeightNodes());
+                logger.error(numPeers);
+                System.out.println("Wrote to log: " + numPeers);
+
+                //  }
+
+                    /*logger.error("[GOSSIP][NODES][Sent] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes() + "; ID: " + message.getId());
                     logger.error("[GOSSIP][USERS][Sent] Sum: " + message.getSumUsers() + "; Weight: " + message.getWeightUsers() + "; ID: " + message.getId());
                     logger.error("[GOSSIP][ITEMS][Sent] Sum: " + message.getSumItems() + "; Weight: " + message.getWeightItems() + "; ID: " + message.getId());
-                }
+                */
+            }
 
-                @Override
-                public void exceptionCaught(Throwable t) throws Exception {
-                }
-            });
+            @Override
+            public void exceptionCaught(Throwable t) throws Exception {
+            }
+        });
 
-            //num++;
+        //num++;
     }
 
     public void resetGossip(boolean isAdmin){
@@ -165,13 +178,15 @@ public class GossipConnect {
         return sumNodes;
     }
 
-    public void startGossip() {
+    public void startGossipAdmin() {
         this.weightNodes = 1.0;
+        this.weightUsers = 1.0;
+        this.weightItems = 1.0;
     }
 
     public void setSumNodes(Double sumNodes) {
-             this.sumNodes = sumNodes;
-         }
+        this.sumNodes = sumNodes;
+    }
 
     public Double getWeightNodes() {
         return weightNodes;
@@ -243,5 +258,9 @@ public class GossipConnect {
 
     public void setOriginalNumItems(double originalNumItems) {
         this.originalNumItems = originalNumItems;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
