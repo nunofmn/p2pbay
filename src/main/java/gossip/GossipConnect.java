@@ -68,7 +68,7 @@ public class GossipConnect {
             //novos users ou items foram adicionados entretanto, adicionar diferença ao sum
             //System.out.println("***********---**********");
             message.setSumUsers(message.getSumUsers() + (numUsersItems.get(0) - this.originalNumUsers )/2);
-            message.setSumItems(message.getSumItems() + (numUsersItems.get(1) + this.originalNumItems)/2);
+            message.setSumItems(message.getSumItems() + (numUsersItems.get(1) - this.originalNumItems)/2);
             originalNumUsers = numUsersItems.get(0);
             originalNumItems = numUsersItems.get(1);
         }
@@ -116,14 +116,23 @@ public class GossipConnect {
         response.addListener(new BaseFutureListener<BaseFuture>() {
             @Override
             public void operationComplete(BaseFuture future) throws Exception {
-                System.out.println("[GOSSIP][Sent] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes());
+                //System.out.println("[GOSSIP][Sent] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes());
                 //System.out.println("[GOSSIP][Sent Users] Sum: " + message.getSumUsers() + "; Weight: " + message.getWeightUsers());
                 //System.out.println("[GOSSIP][Sent Items] Sum: " + message.getSumItems() + "; Weight: " + message.getWeightItems());
 
                 //if(username.equals("joao")) {
-                double numPeers = Math.round(message.getSumNodes() / message.getWeightNodes());
+                //double numPeers = Math.round(message.getSumNodes() / message.getWeightNodes());
+                double numPeers = getSumNodes()/getWeightNodes();
+                //System.out.println("items antes " +  ((getSumItems() / getWeightItems())/ numPeers) );
                 logger.error(numPeers);
-                System.out.println("Wrote to log: " + numPeers);
+                if(numPeers > 6)
+                    numPeers = 6.0;
+
+                //System.out.println("num Peers" + numPeers);
+                double numUsers = (getSumUsers() / getWeightUsers())/ numPeers;
+                double numItems = (getSumItems() / getWeightItems())/ numPeers;
+                //logger.error(numItems);
+                System.out.println("Wrote to log: " + numItems);
 
                 //  }
 
