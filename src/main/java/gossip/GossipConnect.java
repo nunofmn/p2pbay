@@ -48,6 +48,7 @@ public class GossipConnect {
         this.username = username;
 
         peer.setObjectDataReply(new GossipReply(this));
+        logger.error("New gossip user");
     }
 
     public void sendMessage(final GossipMessage message) {
@@ -91,10 +92,6 @@ public class GossipConnect {
         }else{
             message.setId(getId());
         }
-       /* System.out.println("1 sum: " + getSumNodes() + " weight: " + getWeightNodes());
-        System.out.println("1 user sum: " + getSumUsers() + " weight: " + getWeightUsers());
-        System.out.println("1 item sum: " + getSumItems() + " weight: " + getWeightItems());
-*/
 
         this.setSumNodes(message.getSumNodes());
         this.setWeightNodes(message.getWeightNodes());
@@ -105,41 +102,26 @@ public class GossipConnect {
         this.setSumItems(message.getSumItems());
         this.setWeightItems(message.getWeightItems());
 
-        /*System.out.println("2 sum: " + getSumNodes() + " weight: " + getWeightNodes());
-        System.out.println("2 user sum: " + getSumUsers() + " weight: " + getWeightUsers());
-        System.out.println("2 item sum: " + getSumItems() + " weight: " + getWeightItems());
-*/
-
 
         FutureResponse response = peer.sendDirect(destinationpeer).setObject(message).start();
 
         response.addListener(new BaseFutureListener<BaseFuture>() {
             @Override
             public void operationComplete(BaseFuture future) throws Exception {
-                //System.out.println("[GOSSIP][Sent] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes());
-                //System.out.println("[GOSSIP][Sent Users] Sum: " + message.getSumUsers() + "; Weight: " + message.getWeightUsers());
-                //System.out.println("[GOSSIP][Sent Items] Sum: " + message.getSumItems() + "; Weight: " + message.getWeightItems());
+                System.out.println("[GOSSIP][Sent] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes());
+                System.out.println("[GOSSIP][Sent Users] Sum: " + message.getSumUsers() + "; Weight: " + message.getWeightUsers());
+                System.out.println("[GOSSIP][Sent Items] Sum: " + message.getSumItems() + "; Weight: " + message.getWeightItems());
 
-                //if(username.equals("joao")) {
-                //double numPeers = Math.round(message.getSumNodes() / message.getWeightNodes());
-                double numPeers = getSumNodes()/getWeightNodes();
-                //System.out.println("items antes " +  ((getSumItems() / getWeightItems())/ numPeers) );
-                logger.error(numPeers);
+                double numPeers = message.getSumNodes() / message.getWeightNodes();
+
+
                 if(numPeers > 6)
                     numPeers = 6.0;
 
-                //System.out.println("num Peers" + numPeers);
                 double numUsers = (getSumUsers() / getWeightUsers())/ numPeers;
                 double numItems = (getSumItems() / getWeightItems())/ numPeers;
-                //logger.error(numItems);
-                System.out.println("Wrote to log: " + numItems);
-
-                //  }
-
-                    /*logger.error("[GOSSIP][NODES][Sent] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes() + "; ID: " + message.getId());
-                    logger.error("[GOSSIP][USERS][Sent] Sum: " + message.getSumUsers() + "; Weight: " + message.getWeightUsers() + "; ID: " + message.getId());
-                    logger.error("[GOSSIP][ITEMS][Sent] Sum: " + message.getSumItems() + "; Weight: " + message.getWeightItems() + "; ID: " + message.getId());
-                */
+                logger.error(numUsers + " " + numItems);
+                System.out.println("Wrote to log: " + numUsers + " " + numItems);
             }
 
             @Override

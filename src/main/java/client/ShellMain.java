@@ -69,9 +69,6 @@ public class ShellMain {
             gossip.startGossipAdmin();
         }
 
-        System.out.println("------------------------------------------");
-
-
         SettingsBuilder builder = new SettingsBuilder().logging(true);
         builder.enableMan(false)
                 .readInputrc(false);
@@ -79,26 +76,20 @@ public class ShellMain {
         Settings settings = builder.create();
 
         //User interface
-        Command gossipTest = new GossipTest(peer,user,username,gossip);
         Command numberOfPeers = new NumberOfPeers(peer,user,username,gossip);
         Command sellItem = new SellItem(peer,user,username);
-        Command acceptBid = new AcceptBid(peer,user,username);
         Command searchItem = new SearchAndBidItem(peer,user,username);
-        Command viewItem = new ViewItem(peer,user,username);
         Command viewPurchase = new ViewPurchase(peer,user,username);
         Command biddingHistory = new BiddingHistory(peer,user,username);
         Command showMyItem = new ShowMyItem(peer,user,username);
-        Command exit = new ExitCommand(peer);
+        Command exit = new ExitCommand(peer, gossip);
         Command showObj = new ShowStoredObj(peer,user,username,gossip);
 
 
         CommandRegistry registry = new AeshCommandRegistryBuilder()
-                .command(gossipTest)
                 .command(numberOfPeers)
                 .command(sellItem)
-                .command(acceptBid)
                 .command(searchItem)
-                .command(viewItem)
                 .command(viewPurchase)
                 .command(biddingHistory)
                 .command(showMyItem)

@@ -49,7 +49,6 @@ public class SellItem implements Command {
         this.shell = commandInvocation.getShell();
 
         shell.out().println("Sell Item command");
-//peer.getPeer().shutdown();
         Number160 itemId, itemBidsId;
         NetworkContent objectInDHT;
         Random r = new Random();
@@ -62,7 +61,6 @@ public class SellItem implements Command {
 
         shell.out().println("Arguments: " + title + " " + description + " " + minimumbid);
 
-        // arguments: title, description, minimumbid, username
         Item item = new Item(title, description, minimumbid, username, itemId.toString(), itemBidsId.toString());
         user.addItem(itemId.toString());
         peer.store(itemId.toString() , item, ITEM );

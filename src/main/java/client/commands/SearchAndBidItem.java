@@ -114,8 +114,6 @@ public class SearchAndBidItem implements Command {
 
                 result = stack.remove(0);
 
-
-                // get items from results TODO - Refactor to another class
                 List<Item> items = new ArrayList<Item>();
 
                 if(result != null && !result.isEmpty()) {
@@ -128,10 +126,7 @@ public class SearchAndBidItem implements Command {
                     }
                 }
 
-
-                //show option TODO - Refactor to another class
                 if(!items.isEmpty()) {
-                    //show results TODO - Refactor to another class
                     int count = 1;
                     shell.out().println("0 - Exit Search");
                     for(Item item : items) {
@@ -139,13 +134,7 @@ public class SearchAndBidItem implements Command {
                         count++;
                     }
 
-
                     option = helper.promptForInput("Choose item to show: ", null, commandInvocation);
-
-                    /*shell.out().println("Choose item to show: ");
-                    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                    String option = br.readLine();*/
-
 
                     try {
                         if (Integer.parseInt(option) == 0) {
@@ -156,13 +145,11 @@ public class SearchAndBidItem implements Command {
                         return CommandResult.FAILURE;
                     }
 
-                    //show item TODO - Refactor to another class
                     Item showitem = items.get(Integer.parseInt(option)-1);
                     shell.out().println("Title: " + showitem.getTitle());
                     shell.out().println("Description: " + showitem.getDescription());
                     shell.out().println("Bid History:");
 
-                    //show item bids TODO - Refactor to another class
                     List<BidInfo> bids = peer.getBids(showitem.getUnHashedBidListId(), BID);
                     Double currentPrice = showitem.getValue();
                     if (bids != null && !bids.isEmpty()) {
@@ -174,11 +161,7 @@ public class SearchAndBidItem implements Command {
                     } else {
                         System.out.println("No bids were made. Minimum bid is " + showitem.getValue() + " Euros.");
                     }
-
-                    //bid on item
                     bidoption = helper.promptForInput("Bid on item? (y/n): ", null, commandInvocation);
-
-
                     if(bidoption.toString().equals("y")){
                         while(true) {
                             bidvalue = helper.promptForInput("Bid value (minimum: " + currentPrice + "): ", null, commandInvocation);
@@ -195,21 +178,15 @@ public class SearchAndBidItem implements Command {
                                 shell.out().println("*Value is too low, you need more than " + currentPrice + " Euros");
                             }
                         }
-
                     }else if(bidoption.toString().equals("n")) {
                         return CommandResult.SUCCESS;
                     }else{
-
                         shell.out().println("Invalid option");
                         return CommandResult.FAILURE;
                     }
-
                 }else{
                     shell.out().println("No items to show");
                 }
-
-
-
         }catch(ClassNotFoundException e) {
             System.out.println("Didn't find word in DHT.");
         }
