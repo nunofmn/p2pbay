@@ -13,6 +13,7 @@ import org.jboss.aesh.io.Resource;
 import org.jboss.aesh.terminal.Shell;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @CommandDefinition(name="purchase-history", description ="view purchases history")
@@ -42,27 +43,26 @@ public class ViewPurchase implements Command {
     public CommandResult execute(CommandInvocation commandInvocation) throws IOException, InterruptedException {
 
         this.shell = commandInvocation.getShell();
-
-        //ir ao bidhistory e percorrer todas e ver se ganhei alguma
-
         if(!user.getMyBidHistory().isEmpty()) {
 
-            for (BidInfo bid : user.getMyBidHistory()) {
+            List<String> alreadyBought = new ArrayList<String>();
+            BidInfo bid;
+            for(int i = user.getMyBidHistory().size()-1; i >= 0 ; i--){
                 try {
+                    bid = user.getMyBidHistory().get(i);
                     Item item = (Item) peer.get(bid.getHashId(), ITEM);
-                    if (item.getWinner().equals(username))
+                    if (item.getWinner().equals(username) && !alreadyBought.contains(bid.getHashId())) {
                         shell.out().println("You purchased " + bid.getTitle() + ", you spent " + bid.getValue() + " Euros.");
+                        alreadyBought.add(bid.getHashId());
+                    }
                 } catch (Exception e) {
                 }
             }
+
         }else{
             shell.out().println("You have no purchases.");
 
         }
-
-
-        shell.out().println("View purchase command");
-
         return null;
     }
 }

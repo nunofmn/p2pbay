@@ -5,6 +5,7 @@ import client.menu.LoginMenu;
 import core.model.UserProfile;
 import core.network.PeerConnection;
 import gossip.GossipConnect;
+import gossip.GossipMessage;
 import org.apache.logging.log4j.LogManager;
 import org.jboss.aesh.console.AeshConsole;
 import org.jboss.aesh.console.AeshConsoleBuilder;
@@ -19,12 +20,15 @@ import org.jboss.aesh.terminal.TerminalColor;
 import org.jboss.aesh.terminal.TerminalString;
 import org.apache.logging.log4j.Logger;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class ShellMain {
 
     private static PeerConnection peer;
     private static UserProfile user;
     private static String username;
-    final static Logger logger = LogManager.getLogger(ShellMain.class);
 
     public static void main(String[] args) throws Exception {
 
@@ -35,13 +39,34 @@ public class ShellMain {
             peer = new PeerConnection(args[0]);
         }
 
+        username = "";
+
+
+        final GossipConnect gossip = new GossipConnect(peer, username, false);
+
+        // gossip protocol thread executor
+        ScheduledExecutorService gossipexecutor = Executors.newSingleThreadScheduledExecutor();
+
+        Runnable periodicTask = new Runnable() {
+            public void run() {
+                gossip.sendMessage(new GossipMessage(gossip.getSumNodes()/2, gossip.getWeightNodes()/2,
+                        gossip.getSumUsers()/2, gossip.getWeightUsers()/2,
+                        gossip.getSumItems()/2 , gossip.getWeightItems()/2, gossip.getId()));
+            }
+        };
+
+        gossipexecutor.scheduleAtFixedRate(periodicTask, 0, 5, TimeUnit.SECONDS);
+
         //Login
         LoginMenu login = new LoginMenu();
         login.display(peer);
         user = login.getUserProfile();
         username = login.getUsername();
+        gossip.setUsername(username);
+        if(username.equals("Admin")){
+            gossip.startGossipAdmin();
+        }
 
-        GossipConnect gossip = new GossipConnect(peer.getPeer());
         SettingsBuilder builder = new SettingsBuilder().logging(true);
         builder.enableMan(false)
                 .readInputrc(false);
@@ -49,29 +74,25 @@ public class ShellMain {
         Settings settings = builder.create();
 
         //User interface
-        Command gossipTest = new GossipTest(peer,user,username,gossip);
         Command numberOfPeers = new NumberOfPeers(peer,user,username,gossip);
         Command sellItem = new SellItem(peer,user,username);
-        Command acceptBid = new AcceptBid(peer,user,username);
         Command searchItem = new SearchAndBidItem(peer,user,username);
-        Command viewItem = new ViewItem(peer,user,username);
         Command viewPurchase = new ViewPurchase(peer,user,username);
         Command biddingHistory = new BiddingHistory(peer,user,username);
         Command showMyItem = new ShowMyItem(peer,user,username);
-        Command exit = new ExitCommand();
+        Command exit = new ExitCommand(peer, gossip);
+        Command showObj = new ShowStoredObj(peer,user,username,gossip);
 
 
         CommandRegistry registry = new AeshCommandRegistryBuilder()
-                .command(gossipTest)
                 .command(numberOfPeers)
                 .command(sellItem)
-                .command(acceptBid)
                 .command(searchItem)
-                .command(viewItem)
                 .command(viewPurchase)
                 .command(biddingHistory)
                 .command(showMyItem)
-                .command(ExitCommand.class)
+                .command(exit)
+                .command(showObj)
                 .create();
 
         AeshConsole aeshConsole = new AeshConsoleBuilder()

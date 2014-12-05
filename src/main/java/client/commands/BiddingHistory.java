@@ -40,13 +40,12 @@ public class BiddingHistory implements Command{
 
         this.shell = commandInvocation.getShell();
 
+        if(user.getMyBidHistory().isEmpty()){
+            shell.out().println("You made no bids yet.");
+        }
         for(BidInfo bid : user.getMyBidHistory()){
             shell.out().println("You bidded " + bid.getValue() + " Euros on item: " + bid.getTitle());
         }
-
-
-
-        //shell.out().println("Bidding history command");
 
         return null;
     }

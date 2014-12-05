@@ -23,7 +23,6 @@ public class Item extends NetworkContent {
         this.value = initialValue;
         this.owner = owner;
         this.unHashedKey = unHashedKey;
-        //this.bidHistory = new ArrayList<BidInfo>();
         this.unHashedBidListId = unHashedBidListId;
 
     }
