@@ -47,8 +47,6 @@ public class PeerConnection {
 
         Random r = new Random();
         Bindings b = new Bindings();
-        //b.addInterface("eth0");
-// create a peer with a random peerID, on port 4000, listening to the interface eth0
         peer = new PeerMaker(new Number160(r)).setPorts(Integer.parseInt(myPort)).setBindings(b).makeAndListen();
         peer.getConfiguration().setBehindFirewall(true);
 
@@ -70,7 +68,6 @@ public class PeerConnection {
 
     public NetworkContent get(String name, String domain)
             throws ClassNotFoundException, IOException {
-        //FutureDHT futureDHT = peer.get(Number160.createHash(name)).start();
 
         FutureDHT futureDHT = peer.get(Number160.createHash(name)).setDomainKey(Number160.createHash(domain)).start();
         futureDHT.awaitUninterruptibly();

@@ -11,7 +11,7 @@ import java.util.List;
 public class GossipReply implements ObjectDataReply{
 
     private GossipConnect gossip;
-    static final Logger logger = LogManager.getLogger(GossipReply.class);
+    static final Logger logger = LogManager.getLogger(GossipConnect.class);
 
     public GossipReply(GossipConnect gossip) {
         this.gossip = gossip;
@@ -19,14 +19,8 @@ public class GossipReply implements ObjectDataReply{
 
     @Override
     public Object reply(PeerAddress sender, Object request) throws Exception {
-        //logger.log(GOSSIP, "Received message from: " + sender.getID().longValue());
         GossipMessage message = (GossipMessage)request;
         if(message.getId() > gossip.getId()) {
-
-            System.out.println("id != ");
-            logger.error("reset");
-            //logger.error("[GOSSIP][Reset] New: " + gossip.getId() + "; Old: " + message.getId());
-
             if(gossip.getUsername().equals("Admin")){
 
                 gossip.resetGossip(true);
@@ -35,18 +29,12 @@ public class GossipReply implements ObjectDataReply{
                 gossip.resetGossip(false, message);
                 gossip.setId(message.getId());
             }
+            logger.error("Gossip reset");
             return "OK";
         } else  if(message.getId() < gossip.getId()){
             //descartar msg pois e mais antiga
             return "OK";
         }
-        //System.out.println("Tinha sum: " + gossip.getSumNodes() + " weight: " + gossip.getWeightNodes());
-        //System.out.println("Tinha user sum: " + gossip.getSumUsers() + " weight: " + gossip.getWeightUsers());
-        //System.out.println("Tinha item sum: " + gossip.getSumItems() + " weight: " + gossip.getWeightItems());
-        //logger.error("[GOSSIP][NODES][Received] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes() + "; ID: " + message.getId());
-        //logger.error("[GOSSIP][USERS][Received] Sum: " + message.getSumUsers() + "; Weight: " + message.getWeightUsers() + "; ID: " + message.getId());
-        //logger.error("[GOSSIP][ITEMS][Received] Sum: " + message.getSumItems() + "; Weight: " + message.getWeightItems() + "; ID: " + message.getId());
-
         gossip.setSumNodes((gossip.getSumNodes() + message.getSumNodes()));
         gossip.setWeightNodes((gossip.getWeightNodes() + message.getWeightNodes()));
 
@@ -55,10 +43,6 @@ public class GossipReply implements ObjectDataReply{
 
         gossip.setSumItems((gossip.getSumItems() + message.getSumItems()));
         gossip.setWeightItems((gossip.getWeightItems() + message.getWeightItems()));
-        //System.out.println("Fiquei sum: " + gossip.getSumNodes() + " weight: " + gossip.getWeightNodes());
-        //System.out.println("Fiquei user sum: " + gossip.getSumUsers() + " weight: " + gossip.getWeightUsers());
-        //System.out.println("Fiquei item sum: " + gossip.getSumItems() + " weight: " + gossip.getWeightItems());
-
         return "OK";
     }
 }

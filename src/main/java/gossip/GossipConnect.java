@@ -6,10 +6,7 @@ import net.tomp2p.futures.BaseFuture;
 import net.tomp2p.futures.BaseFutureListener;
 import net.tomp2p.futures.FutureResponse;
 import net.tomp2p.p2p.Peer;
-import net.tomp2p.p2p.PeerMaker;
-import net.tomp2p.peers.Number160;
 import net.tomp2p.peers.PeerAddress;
-import net.tomp2p.rpc.ObjectDataReply;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,9 +32,6 @@ public class GossipConnect {
     private double originalNumUsers;
     private double originalNumItems;
 
-    //static final Logger logger = LogManager.getLogger(GossipConnect.class);
-    //final Level GOSSIP = Level.forName("GOSSIP", 200);
-
     public GossipConnect(PeerConnection peerCon, String username, boolean isAdmin) {
         this.peerCon = peerCon;
         this.peer = peerCon.getPeer();
@@ -48,17 +42,12 @@ public class GossipConnect {
         this.username = username;
 
         peer.setObjectDataReply(new GossipReply(this));
-        logger.error("New gossip user");
+        logger.error("New gossip");
     }
 
     public void sendMessage(final GossipMessage message) {
-
-
-        //System.out.println("default bag size - " + new PeerMaker(new Number160(4)).getBagSize());
         List<PeerAddress> peers = peer.getPeerBean().getPeerMap().getAll();
-        //System.out.println("meus peers - " + peers.size());
         if(peers.isEmpty()){
-            System.out.println("Gossip nao tem vizinhos");
             return;
         }
         num++;
@@ -67,7 +56,6 @@ public class GossipConnect {
         List<Double> numUsersItems = peerCon.getNumUsersItems();
         if(this.originalNumUsers != numUsersItems.get(0) || this.originalNumItems != numUsersItems.get(1)){
             //novos users ou items foram adicionados entretanto, adicionar diferença ao sum
-            //System.out.println("***********---**********");
             message.setSumUsers(message.getSumUsers() + (numUsersItems.get(0) - this.originalNumUsers )/2);
             message.setSumItems(message.getSumItems() + (numUsersItems.get(1) - this.originalNumItems)/2);
             originalNumUsers = numUsersItems.get(0);
@@ -108,20 +96,11 @@ public class GossipConnect {
         response.addListener(new BaseFutureListener<BaseFuture>() {
             @Override
             public void operationComplete(BaseFuture future) throws Exception {
-                System.out.println("[GOSSIP][Sent] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes());
-                System.out.println("[GOSSIP][Sent Users] Sum: " + message.getSumUsers() + "; Weight: " + message.getWeightUsers());
-                System.out.println("[GOSSIP][Sent Items] Sum: " + message.getSumItems() + "; Weight: " + message.getWeightItems());
 
-                double numPeers = message.getSumNodes() / message.getWeightNodes();
+                logger.error("[GOSSIP][Sent] Sum: " + message.getSumNodes() + "; Weight: " + message.getWeightNodes());
+                logger.error("[GOSSIP][Sent Users] Sum: " + message.getSumUsers() + "; Weight: " + message.getWeightUsers());
+                logger.error("[GOSSIP][Sent Items] Sum: " + message.getSumItems() + "; Weight: " + message.getWeightItems());
 
-
-                if(numPeers > 6)
-                    numPeers = 6.0;
-
-                double numUsers = (getSumUsers() / getWeightUsers())/ numPeers;
-                double numItems = (getSumItems() / getWeightItems())/ numPeers;
-                logger.error(numUsers + " " + numItems);
-                System.out.println("Wrote to log: " + numUsers + " " + numItems);
             }
 
             @Override

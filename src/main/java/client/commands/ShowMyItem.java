@@ -128,7 +128,7 @@ public class ShowMyItem implements Command{
                 peer.store(item.getUnHashedKey() , item, ITEM);
                 shell.out().println("Item " + item.getTitle() + " has been successful finalized.\n");
 
-            } else { //mostar bid history de um item
+            } else {
 
                 int index = Integer.parseInt((String) option);
                 Item item = items.get(index-1);

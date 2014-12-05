@@ -14,7 +14,7 @@ import org.jboss.aesh.terminal.Shell;
 import java.io.IOException;
 import java.util.List;
 
-@CommandDefinition(name="npeers", description ="number of peers")
+@CommandDefinition(name="statistics", description ="number of peers, users and items")
 public class NumberOfPeers implements Command {
     @Arguments
     private List<Resource> arguments;
@@ -50,15 +50,17 @@ public class NumberOfPeers implements Command {
         double numItems = (gossip.getSumItems() / gossip.getWeightItems())/ numPeers;
 
 
-        shell.out().println("Number of peers: " + Math.round(gossip.getSumNodes()/gossip.getWeightNodes()));
-        shell.out().println("Number of peers Sampaio: " + Math.ceil(gossip.getSumNodes() / gossip.getWeightNodes()));
+        shell.out().println("Number of peers: ");
+        shell.out().println("Rounded:" + Math.round(gossip.getSumNodes()/gossip.getWeightNodes()));
+        shell.out().println("Correct value:" + gossip.getSumNodes()/gossip.getWeightNodes());
 
-        shell.out().println("Number of users: " + Math.round(numUsers));
-        shell.out().println("Number of Users Sampaio: " + Math.ceil(numUsers));
+        shell.out().println("Number of users: ");
+        shell.out().println("Rounded:" + Math.round(numUsers));
+        shell.out().println("Correct value:" + numUsers);
 
-        shell.out().println("Number of items: " + Math.round(numItems));
-        shell.out().println("Number of items Sampaio: " + Math.ceil(numItems));
-
+        shell.out().println("Number of items: ");
+        shell.out().println("Rounded:" + Math.round(numItems));
+        shell.out().println("Correct value:" + numItems);
 
         return null;
     }

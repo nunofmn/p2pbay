@@ -31,13 +31,6 @@ public class ExitCommand implements Command {
                 gossip.getSumUsers()-usersItems.get(0), gossip.getWeightUsers(),
                 gossip.getSumItems()-usersItems.get(1) , gossip.getWeightItems(), gossip.getId()));
 
-        commandInvocation.getShell().out().println("Enviou msg gossipLeave");
-
-
-
-
-
-
         peer.getPeer().shutdown();
         commandInvocation.getShell().out().println("Thank you for choosing p2pBay, see you soon!");
         commandInvocation.stop();

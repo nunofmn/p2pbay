@@ -63,10 +63,6 @@ public class ViewPurchase implements Command {
             shell.out().println("You have no purchases.");
 
         }
-
-
-        shell.out().println("View purchase command");
-
         return null;
     }
 }

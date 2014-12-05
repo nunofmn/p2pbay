@@ -29,7 +29,6 @@ public class ShellMain {
     private static PeerConnection peer;
     private static UserProfile user;
     private static String username;
-    final static Logger logger = LogManager.getLogger(ShellMain.class);
 
     public static void main(String[] args) throws Exception {
 
@@ -40,7 +39,6 @@ public class ShellMain {
             peer = new PeerConnection(args[0]);
         }
 
-        //boolean isAdmin = false;
         username = "";
 
 

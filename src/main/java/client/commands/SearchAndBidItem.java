@@ -5,6 +5,8 @@ import core.model.Item;
 import core.model.NetworkContent;
 import core.model.UserProfile;
 import core.network.PeerConnection;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jboss.aesh.cl.Arguments;
 import org.jboss.aesh.cl.CommandDefinition;
 import org.jboss.aesh.console.command.Command;
@@ -16,10 +18,7 @@ import org.jboss.aesh.terminal.Shell;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @CommandDefinition(name="search", description ="search for an item")
 public class SearchAndBidItem implements Command {
@@ -31,6 +30,7 @@ public class SearchAndBidItem implements Command {
     private static final String ITEM = "item";
     private static final String BID = "bid";
     private static final String SEARCH = "search";
+    static final Logger logger = LogManager.getLogger(SearchAndBidItem.class);
 
     @Arguments
     private List<Resource> arguments;
@@ -84,109 +84,107 @@ public class SearchAndBidItem implements Command {
 
         this.shell = commandInvocation.getShell();
         String bidvalue, option, bidoption;
-
         PromptForInputHelper helper = new PromptForInputHelper();
         NetworkContent objectInDHT;
 
         try {
-                List<String> operandGetResult = null;
-                List<String> result = null;
-                List<List<String>> stack = new ArrayList<List<String>>();
-                List<String> operand1, operand2;
-                String symbol;
-                Item itemRealTime;
+            List<String> operandGetResult = null;
+            List<String> result = null;
+            List<List<String>> stack = new ArrayList<List<String>>();
+            List<String> operand1, operand2;
+            String symbol;
+            Item itemRealTime;
+            for(int i= arguments.size() - 1; i >= 0; i--){
+                symbol = arguments.get(i).toString().toLowerCase();
+                if(isOperand(symbol)){
+                    operandGetResult = peer.getIndexSearch(symbol, SEARCH);
+                    if (operandGetResult == null ) {
+                        operandGetResult = new ArrayList<String>();
+                    }
+                    stack.add(operandGetResult);
+                } else if(isOperator(symbol)){
+                    operand1 = stack.remove(stack.size()-1);
+                    operand2 = stack.remove(stack.size()-1);
+                    stack.add(computeOperator(symbol , operand1, operand2));
 
-                for(int i= arguments.size() - 1; i >= 0; i--){
-                    symbol = arguments.get(i).toString().toLowerCase();
-                    if(isOperand(symbol)){
-                        operandGetResult = peer.getIndexSearch(symbol, SEARCH);
-                        if (operandGetResult == null ) {
-                            operandGetResult = new ArrayList<String>();
-                        }
-                        stack.add(operandGetResult);
-                    } else if(isOperator(symbol)){
-                        operand1 = stack.remove(stack.size()-1);
-                        operand2 = stack.remove(stack.size()-1);
-                        stack.add(computeOperator(symbol , operand1, operand2));
+                }
+            }
 
+
+            result = stack.remove(0);
+
+            List<Item> items = new ArrayList<Item>();
+
+            if(result != null && !result.isEmpty()) {
+
+                for(String itemkey : result) {
+                    NetworkContent getitem = peer.get(itemkey, ITEM);
+                    if(getitem != null && getitem.contentType().equals("Item") && !((Item)getitem).isFinalized()) {
+                        items.add((Item)getitem);
                     }
                 }
-
-                result = stack.remove(0);
-
-                List<Item> items = new ArrayList<Item>();
-
-                if(result != null && !result.isEmpty()) {
-
-                    for(String itemkey : result) {
-                        NetworkContent getitem = peer.get(itemkey, ITEM);
-                        if(getitem != null && getitem.contentType().equals("Item") && !((Item)getitem).isFinalized()) {
-                            items.add((Item)getitem);
-                        }
-                    }
+            }
+            if(!items.isEmpty()) {
+                int count = 1;
+                shell.out().println("0 - Exit Search");
+                for(Item item : items) {
+                    shell.out().println(count + " - " + item.getTitle());
+                    count++;
                 }
 
-                if(!items.isEmpty()) {
-                    int count = 1;
-                    shell.out().println("0 - Exit Search");
-                    for(Item item : items) {
-                        shell.out().println(count + " - " + item.getTitle());
-                        count++;
-                    }
+                option = helper.promptForInput("Choose item to show: ", null, commandInvocation);
 
-                    option = helper.promptForInput("Choose item to show: ", null, commandInvocation);
-
-                    try {
-                        if (Integer.parseInt(option) == 0) {
-                            return CommandResult.FAILURE;
-                        }
-                    }catch(NumberFormatException e) {
-                        shell.out().println("Invalid option");
+                try {
+                    if (Integer.parseInt(option) == 0) {
                         return CommandResult.FAILURE;
                     }
+                }catch(NumberFormatException e) {
+                    shell.out().println("Invalid option");
+                    return CommandResult.FAILURE;
+                }
 
-                    Item showitem = items.get(Integer.parseInt(option)-1);
-                    shell.out().println("Title: " + showitem.getTitle());
-                    shell.out().println("Description: " + showitem.getDescription());
-                    shell.out().println("Bid History:");
+                Item showitem = items.get(Integer.parseInt(option)-1);
+                shell.out().println("Title: " + showitem.getTitle());
+                shell.out().println("Description: " + showitem.getDescription());
+                shell.out().println("Bid History:");
 
-                    List<BidInfo> bids = peer.getBids(showitem.getUnHashedBidListId(), BID);
-                    Double currentPrice = showitem.getValue();
-                    if (bids != null && !bids.isEmpty()) {
-                        for (BidInfo bid : bids) {
-                            if(currentPrice < bid.getValue())
-                                currentPrice = bid.getValue();
-                            shell.out().println("User: " + bid.getHashId() + " bidded " + bid.getValue() + " Euros.");
-                        }
-                    } else {
-                        System.out.println("No bids were made. Minimum bid is " + showitem.getValue() + " Euros.");
+                List<BidInfo> bids = peer.getBids(showitem.getUnHashedBidListId(), BID);
+                Double currentPrice = showitem.getValue();
+                if (bids != null && !bids.isEmpty()) {
+                    for (BidInfo bid : bids) {
+                        if(currentPrice < bid.getValue())
+                            currentPrice = bid.getValue();
+                        shell.out().println("User: " + bid.getHashId() + " bidded " + bid.getValue() + " Euros.");
                     }
-                    bidoption = helper.promptForInput("Bid on item? (y/n): ", null, commandInvocation);
-                    if(bidoption.toString().equals("y")){
-                        while(true) {
-                            bidvalue = helper.promptForInput("Bid value (minimum: " + currentPrice + "): ", null, commandInvocation);
+                } else {
+                    System.out.println("No bids were made. Minimum bid is " + showitem.getValue() + " Euros.");
+                }
+                bidoption = helper.promptForInput("Bid on item? (y/n): ", null, commandInvocation);
+                if(bidoption.toString().equals("y")){
+                    while(true) {
+                        bidvalue = helper.promptForInput("Bid value (minimum: " + currentPrice + "): ", null, commandInvocation);
 
-                            if (Double.parseDouble(bidvalue) > currentPrice) {
+                        if (Double.parseDouble(bidvalue) > currentPrice) {
 
-                                peer.addToList(showitem.getUnHashedBidListId(), new BidInfo(Double.parseDouble(bidvalue), this.username), BID);
-                                this.user.addBid(new BidInfo(showitem.getTitle(), Double.parseDouble(bidvalue), showitem.getUnHashedKey()));
+                            peer.addToList(showitem.getUnHashedBidListId(), new BidInfo(Double.parseDouble(bidvalue), this.username), BID);
+                            this.user.addBid(new BidInfo(showitem.getTitle(), Double.parseDouble(bidvalue), showitem.getUnHashedKey()));
 
-                                peer.store(this.username, this.user, USER);
-                                shell.out().println("Bid successfully placed");
-                                break;
-                            } else {
-                                shell.out().println("*Value is too low, you need more than " + currentPrice + " Euros");
-                            }
+                            peer.store(this.username, this.user, USER);
+                            shell.out().println("Bid successfully placed");
+                            break;
+                        } else {
+                            shell.out().println("*Value is too low, you need more than " + currentPrice + " Euros");
                         }
-                    }else if(bidoption.toString().equals("n")) {
-                        return CommandResult.SUCCESS;
-                    }else{
-                        shell.out().println("Invalid option");
-                        return CommandResult.FAILURE;
                     }
+                }else if(bidoption.toString().equals("n")) {
+                    return CommandResult.SUCCESS;
                 }else{
-                    shell.out().println("No items to show");
+                    shell.out().println("Invalid option");
+                    return CommandResult.FAILURE;
                 }
+            }else{
+                shell.out().println("No items to show");
+            }
         }catch(ClassNotFoundException e) {
             System.out.println("Didn't find word in DHT.");
         }

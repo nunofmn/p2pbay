@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 
-@CommandDefinition(name="show", description ="test gossip protocol")
+@CommandDefinition(name="show", description ="shows stored objects in DHT")
 public class ShowStoredObj implements Command {
     private static final String USER = "user";
     private static final String ITEM = "item";
@@ -58,12 +58,9 @@ public class ShowStoredObj implements Command {
         int numUtilizadores = 0;
         int numItems = 0;
 
-        shell.out().println("chave users - " + userKey);
-        shell.out().println("chave item - " + itemKey);
         NavigableMap<Number480, Data> a =  peer.getPeer().getPeerBean().getStorage().map();
         int size = 0;
         for(Map.Entry<Number480, Data> entry : peer.getPeer().getPeerBean().getStorage().map().entrySet()){
-            shell.out().println("--"+entry.getKey().toString());
             size++;
             if(entry.getKey().toString().contains(userKey)){
                 numUtilizadores++;
@@ -76,9 +73,6 @@ public class ShowStoredObj implements Command {
         shell.out().println("objectos guardados! - " + size);
         shell.out().println("Numero de utilizadores registados! - " + numUtilizadores);
         shell.out().println("Numero de items! - " + numItems);
-
-
-
         return null;
     }
 }
